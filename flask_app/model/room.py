@@ -83,3 +83,25 @@ class Room:
         # NOTE: don't know if you would want to do this but...
         query = "DELETE FROM members WHERE room_id = %(room_id)s;"
         return MySQLConnection(db).query_db( query, data )
+
+    @classmethod
+    def get_administrator(cls, data):
+        query = "SELECT users.id as id, users.first_name as first_name, users.last_name as last_name "\
+                "FROM users LEFT JOIN rooms WHERE rooms.administrator_id = %(administrator_id)s;"
+        results = MySQLConnection(db).query_db( query, data )
+        return Member(results[0])
+
+    @classmethod
+    def get_all_user_rooms(cls, data):
+        query = "SELECT * FROM rooms LEFT JOIN members ON rooms.id = members.room_id "\
+                "WHERE members.user_id = %(user_id)s;"
+        results = MySQLConnection(db).query_db( query, data )
+        my_rooms = []
+        for result in results:
+            my_room = cls(result)
+            data = {
+                'administrator_id' : my_room.administrator_id
+            }
+            my_room.administrator = Room.get_administrator(data)
+            my_rooms.append(my_room)
+        return my_rooms

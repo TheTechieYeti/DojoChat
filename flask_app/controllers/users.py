@@ -3,6 +3,8 @@ from flask import render_template, redirect, session, flash, request
 from flask_app.config.mysqlconnection import MySQLConnection
 from flask_bcrypt import Bcrypt
 from flask_app.model import user
+from flask_app.model import chat
+from flask_app.model import room
 bcrypt = Bcrypt(app)
 
 
@@ -16,35 +18,42 @@ def log_reg():
 def register():
     if not user.User.validate_user(request.form):
         return redirect ('/')
-    if not user.User.validate_email(request.form):
-        return redirect ('/')
+    #if not user.User.validate_email(request.form):
+    #    return redirect ('/')
     if not user.User.validate_password(request.form):
         return redirect ('/')
     data = {
         "first_name" : request.form["first_name"],
         "last_name" : request.form["last_name"],
         "username" : request.form["username"],
+        "email" : "",
         "password" : bcrypt.generate_password_hash(request.form["password"]),
     }
     session['user_id'] = user.User.create_user(data)
-    return redirect("/dashboard") 
+    session['first_name'] = request.form["first_name"]
+    session['last_name'] = request.form["last_name"]
+    return redirect("/dashboard", ) 
 
-@app.route('/dashboard')          
-def dashboard():   
+@app.route('/dashboard')
+def dashboard():
     print(session)
     if 'user_id' not in session:
         flash('You must be logged in to view this page')
         return redirect('/')
     
-    return render_template("dashboard.html", )
+    data = {
+        'user_id' : session['user_id']
+    }
+    return render_template("dashboard.html", rooms = room.Room.get_all_user_rooms(data), chats = chat.Chat.get_all_user_chats(data))
 
-@app.route('/login', methods = ["POST"])         
+@app.route('/login', methods = ["POST"])
 def login():
     data = {
         "username" : request.form["username"],
     }
     print(f'this is my data from my request form {data}')
-    login_user = user.User.get_user_by_email(data)
+    #login_user = user.User.get_user_by_email(data)
+    login_user = user.User.get_user_by_username(data)
     if not login_user:
         flash("Please check your username. No user found with that username.")
         return redirect ("/")
@@ -52,9 +61,9 @@ def login():
         flash("Incorrect Password")
         return redirect ("/")
     session["user_id"] = login_user.id
-    return redirect("/dashboard",) 
+    return redirect("/dashboard",)
 
-@app.route('/user/<int:user_id>')          
+@app.route('/user/<int:user_id>')
 def display_account(user_id):
     if 'user_id' not in session:
         flash('You must be logged in to view this page')
@@ -62,7 +71,7 @@ def display_account(user_id):
     
     return render_template("user.html")
 
-@app.route('/user/<int:user_id>/edit')          
+@app.route('/user/<int:user_id>/edit')
 def edit_user(user_id):
     if 'user_id' not in session:
         flash('You must be logged in to view this page')
@@ -70,7 +79,7 @@ def edit_user(user_id):
     
     return render_template("user_edit.html")
 
-@app.route('/user/<int:user_id>/edit/process', methods = ["POST"])         
+@app.route('/user/<int:user_id>/edit/process', methods = ["POST"])
 def update_user(user_id):
     print(request.form)
     if not user.User.validate_user(request.form):
@@ -81,12 +90,15 @@ def update_user(user_id):
         "first_name" : request.form["first_name"],
         "last_name" : request.form["last_name"],
         "username" : request.form["username"],
+        "email" : "",
         "id" : user_id
     }
     user.User.update_user(data)
     return redirect(f"/user/{user_id}")
-@app.route('/logout')         
+
+@app.route('/logout')
 def logout():
-    session.pop('user_id')
+    #session.pop('user_id')
+    session.clear()
     return redirect("/") 
     

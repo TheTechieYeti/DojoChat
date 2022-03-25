@@ -22,18 +22,12 @@
         <div class="col fs-5 border-end border-5 border-white d-flex justify-content-center">
             <div><a href="/event/search">Search</a></div>
         </div>
+        <div class="col fs-5 border-end border-5 border-white d-flex justify-content-center">
+            <div><a href="/logout">Logout</a></div>
+        </div>
         <div class="col fs-5 d-flex d-flex justify-content-center">
             <div class="row">
                 <div class="col-3">
-                    <a href="/user/{{user.id}}">
-                        {% if not user.img %}
-                        <img class = "me-3 rounded"height = "30px" src="{{ url_for('static', filename= 'images/user_icon.png') }}" alt="User Image" >
-                        {% else %}
-                        <img class = "me-3 rounded"height = "40px" src="{{ url_for('static', filename= user.img) }}" alt="User Image">
-                        {% endif %}
-            
-                        
-                    </a>
                 </div>
                 <div class="col-6 fs-6 m-0 mt-1">Account</div>
                 <div class="col-3">
@@ -45,30 +39,24 @@
     </div>
     <div class="row d-flex justify-content-center" id="main_body">
         <div class="col-6"> 
-            <h2 class="m-3 mt-5">Welcome {{user.first_name}}</h2>
+            <h2 class="m-3 mt-5">Welcome {{session['first_name']}}</h2>
             <table class="table">
                 <thead>
-                    <h3 class="ms-3 mt-5 mb-5">Today is {{user.today_date()}} <br>Here are your events for today</h3>
                     <tr>
-                        <th scope="col">Event Name</th>
-                        <th scope="col">Location Name</th>
-                        <th scope="col">Attendees</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Time</th>
+                        <th scope="col">Room Name</th>
+                        <th scope="col">Created Date</th>
+                        <th scope="col">Last Updated Date</th>
+                        <th scope="col">Administrator</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for event in events  %}
-                        {% if event.event_today() and user.id in event.attendees|map(attribute = 'id') %}
-                        
+                    {% for room in rooms %}
                     <tr>
-                        <th scope="col"><a href="/event/{{event.id}}">{{event.name}}</a></th>
-                        <th scope="col">{{event.creator.full_name()}}</th>
-                        <th scope="col">{{event.capacity()}}</th>
-                        <th scope="col">{{event.date}}</th>
-                        <th scope="col">{{event.start_time}}</th>
+                        <td>{{room.name}}</td>
+                        <td>{{room.created_at}}</td>
+                        <td>{{room.updated_at}}</td>
+                        <td>{{room.administrator.first_name}} {{room.administrator.last_name}}</td>
                     </tr>
-                        {% endif %}
                     {% endfor %}
                 </tbody>   
             </table>
@@ -78,9 +66,9 @@
         <div class="col-6"> 
             <table class="table">
                 <thead>
-                    <h3 class="ms-3 mt-5 mb-5">Here are your future events:</h3>
+                    <h3 class="ms-3 mt-5 mb-5">Here are your recent chats:</h3>
                     <tr>
-                        <th scope="col">Event Name</th>
+                        <th scope="col">Room Name</th>
                         <th scope="col">Location Name</th>
                         <th scope="col">Attendees</th>
                         <th scope="col">Date</th>
@@ -88,19 +76,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for event in events  %}
-                        {% if not event.event_future() and user.id in event.attendees|map(attribute = 'id') %}
-                        
+                    {% for chat in chats %}
                     <tr>
-                        <th scope="col"><a href="/event/{{event.id}}">{{event.name}}</a></th>
-                        <th scope="col">{{event.creator.full_name()}}</th>
-                        <th scope="col">{{event.capacity()}}</th>
-                        <th scope="col">{{event.format_date()}}</th>
-                        <th scope="col">{{event.start_time}}</tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                     </tr>
-                        {% endif %}
                     {% endfor %}
-                </tbody>   
+                </tbody>
             </table>
         </div>
     </div>

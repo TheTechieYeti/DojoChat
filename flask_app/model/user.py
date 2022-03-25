@@ -2,6 +2,7 @@ from flask_app import app
 from flask_app.config.mysqlconnection import MySQLConnection
 from flask import session, flash
 import  pprint
+import re
 from datetime import datetime, date
 db="DojoChat_schema"
 
@@ -10,6 +11,7 @@ class User:
         self.id = data['id']
         self.first_name = data['first_name']
         self.last_name = data['last_name']
+        self.email = data['email']
         self.username= data['username']
         self.password = data['password']
         # self.img = data['img_path']
@@ -49,7 +51,7 @@ class User:
         return all_users
     @classmethod
     def create_user(cls, data): 
-        query = "INSERT INTO users (first_name, last_name, username, password) VALUES(%(first_name)s, %(last_name)s, %(username)s, %(password)s);"
+        query = "INSERT INTO users (first_name, last_name, email, username, password) VALUES(%(first_name)s, %(last_name)s, %(email)s, %(username)s, %(password)s);"
         user = MySQLConnection(db).query_db(query, data)
         return user
     @classmethod
@@ -57,6 +59,7 @@ class User:
         query = '''UPDATE users
         SET first_name = %(first_name)s, 
         last_name = %(last_name)s, 
+        email = %(email)s,
         username = %(username)s
         WHERE id = %(id)s;'''
         return MySQLConnection(db).query_db(query, data)
@@ -94,7 +97,8 @@ class User:
             is_valid = False
         elif len(user['username']) < 3:
             flash("Username must be at least 3 characters")
-        query = "SELECT * FROM users WHERE email = %(email)s;"
+        #query = "SELECT * FROM users WHERE email = %(email)s;"
+        query = "SELECT * FROM users WHERE username = %(username)s;"
         result = MySQLConnection(db).query_db(query, user)
         if len(result) >= 1:
             flash("Username Already Taken!")

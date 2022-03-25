@@ -22,10 +22,19 @@ class Chat:
         return MySQLConnection(db).query_db(query, data)
 
     @classmethod
-    def get_all_messages(cls, data):
+    def get_all_messages_in_chat(cls, data):
         query = "SELECT * FROM messages WHERE chat_id = %(id)s;"
         results = MySQLConnection(db).query_db(query, data)
         messages = []
         for result in results:
             messages.append(Message(result))
-        
+    
+    @classmethod
+    def get_all_user_chats(cls, data):
+        query = "SELECT * FROM chats WHERE id = %(user_id)s;"
+        results = MySQLConnection(db).query_db(query, data)
+        my_chats = []
+        for result in results:
+            my_chat = cls(result)
+            my_chats.append(my_chat)
+        return my_chats

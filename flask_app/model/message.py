@@ -28,4 +28,7 @@ class Message:
 
     @classmethod
     def get_user(cls, data):
-        query = "SELECT id, first_name, last_name FROM users WHERE id = "
+        query = "SELECT id, first_name, last_name FROM users WHERE id = %(user_id)s;"
+        results = MySQLConnection(db).query_db(query, data)
+        return Member(results[0])
+
