@@ -3,6 +3,7 @@ from flask_app.config.mysqlconnection import MySQLConnection
 from flask import session, flash
 import  pprint
 from datetime import datetime, date
+from flask_app.model.member import Member
 
 db="DojoChat_schema"
 class Room:
@@ -39,6 +40,7 @@ class Room:
 
     @classmethod
     def update(cls, data):
+        # NOTE: Do we allow change of admin?
         query = "UPDATE rooms SET name = %(name)s WHERE id = %(id)s;"
         return MySQLConnection(db).query_db( query, data )
 
@@ -47,13 +49,37 @@ class Room:
         # DELETE members from the room first
         query = "DELETE FROM members WHERE room_id = %(id)s;"
         deleted = MySQLConnection(db).query_db( query, data )
-        # now can delete the room... but do we want to do this?? if we store
-        # message logs by room we can't do this??
-        query = "DELETE FROM rooms WHERE id = %(id)s;"
-        return MySQLConnection(db).query_db( query, data )
+        # NOTE: commented this out for the moment - should we keep the room
+        # and keep the messages related to it??
+        #query = "DELETE FROM rooms WHERE id = %(id)s;"
+        #return MySQLConnection(db).query_db( query, data )
 
     @classmethod
     def join(cls, data):
         query = "INSERT INTO members (room_id, user_id) VALUES "\
                 "(%(id)s, %(user_id)s);"
+        return MySQLConnection(db).query_db( query, data )
+
+    @classmethod
+    def leave(cls, data):
+        query = "DELETE FROM members WHERE room_id = %(id)s AND "\
+                "user_id = %(user_id)s;"
+        return MySQLConnection(db).query_db( query, data )
+
+    @classmethod
+    def get_members(cls, data):
+        query = "SELECT u.id, u.first_name, u.last_name "\
+                "LEFT JOIN members ON u.id = members.user_id "\
+                "LEFT JOIN rooms ON rooms.id = members.room_id "\
+                "FROM users as u WHERE u.id = %(id)s;"
+        results = MySQLConnection(db).query_db( query, data )
+        members = []
+        for result in results:
+            members.append(cls(result))
+        return members
+
+    @classmethod
+    def clear_members(cls, data):
+        # NOTE: don't know if you would want to do this but...
+        query = "DELETE FROM members WHERE room_id = %(room_id)s;"
         return MySQLConnection(db).query_db( query, data )
