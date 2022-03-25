@@ -3,7 +3,7 @@ from flask_app.config.mysqlconnection import MySQLConnection
 from flask import session, flash
 import  pprint
 from datetime import datetime, date
-db="iSport_schema"
+db="DojoChat_schema"
 
 class User:
     def __init__(self, data):
