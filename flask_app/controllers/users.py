@@ -44,7 +44,7 @@ def dashboard():
     data = {
         'user_id' : session['user_id']
     }
-    return render_template("dashboard.html", rooms = room.Room.get_all_user_rooms(data), chats = chat.Chat.get_all_user_chats(data))
+    return render_template("dashboard.html", rooms = room.Room.get_all_user_rooms(data), chats = chat.Chat.get_all_user_chats(data),user=user.User.get_logged_in_user())
 
 @app.route('/login', methods = ["POST"])
 def login():

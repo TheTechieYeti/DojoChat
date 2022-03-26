@@ -89,6 +89,25 @@
             </table>
         </div>
     </div>
+    <form action="/chat/{{user.username}}">
+        <!-- <div>
+            <label>Enter your username:</label>
+            <input type="text" name="username">
+        </div> -->
+        <div>
+            <label>Select Chat:</label><br>
+            <input type="radio" name="radio-choice" id="public_chat" value="public"> </input>
+            <label for="public_chat">Public Chat</label>
+            <label>Enter Room Number:</label><br>
+            <input type="text" name="room" value="0"><br>
+            <input type="radio" name="radio-choice" id="private_chat" value="private"> </input>
+            <label for="private_chat">Private Chat</label>
+            <label id= "passkey" for="key"> Enter Passkey:</label>
+            <input id = "passkey" type="text" name="key">
+
+        </div>
+        <button type="submit">Create Chatroom</button>
+    </form>
 </div>
 </body>
 </html>
