@@ -18,23 +18,37 @@ def chat(usr):
     username = usr;
     room = request.args.get('room')
     chat_type = request.args['radio-choice']
-    #print("##############") 
-    #print (chat_type)
+    #print("*************") 
+    #print (request.args['key'])
     
     x = random.randint(1,50)
     print("Random NUmber Generator")
     print(x)
-    data = {
-        "name" : chat_type,
-        "administrator_id" : session['user_id'],
-        "number" : x,
-    }
-    #member.Member.insert_room_id(data)
-    Room.create(data)
-    if username and room:
+    if chat_type == "public":
+        data = {
+            "name" : chat_type,
+            "administrator_id" : session['user_id'],
+            "number" : x,
+            "passkey" : ""
+        }
+        Room.create(data)
         return render_template('chat.html', username=username, room=x, chat_type=chat_type)
+    elif chat_type == "private" :
+        if request.args['key'] == "":
+            flash("Enter a passkey to create a private chat room")
+            return redirect("/dashboard",)
+        data = {
+            "name" : chat_type,
+            "administrator_id" : session['user_id'],
+            "number" : x,
+            "passkey" : request.args['key']
+        }
+        Room.create(data)
+        return render_template('chat.html', username=username, room=x, chat_type=chat_type)
+    #member.Member.insert_room_id(data)
+    #Room.create(data)
     else:
-        return redirect(url_for('dashboard.html'))
+        return redirect("/dashboard",)
 
 @app.route('/join_room/<usr>/<int:room>/<chat_type>')
 def join(usr,room,chat_type):
@@ -44,11 +58,29 @@ def join(usr,room,chat_type):
     chat_type = chat_type
     #print("##############") 
     #print (chat_type)
-    
+    if chat_type == "private" :
+        print("joining private chatroom")
+        print(request.args['private_key'])
+        key = request.args['private_key']
+        if key == "" :
+            flash("Wrong passkey, please enter the correct passkey")
+            return redirect("/dashboard",)
     if username and room:
-        return render_template('chat.html', username=username, room=room, chat_type=chat_type)
+        if chat_type == "private" :
+            data = {
+                'number' : room,
+            }
+            check_key = Room.check_passkey(data)
+            if check_key == key :
+                print (check_key,key)
+                return render_template('chat.html', username=username, room=room, chat_type=chat_type)
+            else :
+                flash("Incorrect passkey. Please enter the right passkey")
+                return redirect("/dashboard",)
+        elif chat_type == "public" :
+            return render_template('chat.html', username=username, room=room, chat_type=chat_type)
     else:
-        return redirect(url_for('dashboard.html'))
+        return redirect("/dashboard",)
 
 @app.route('/exit_room/<int:room>')
 def exit_room(room):

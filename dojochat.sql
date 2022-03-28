@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS `DojoChat_schema`.`rooms` (
   `updated_at` DATETIME NULL DEFAULT Now() on UPDATE Now(),
   `administrator_id` INT NOT NULL,
   `number` INT NOT NULL,
+  `passkey` VARCHAR(45) NULL,
   PRIMARY KEY (`id`, `administrator_id`, `number`))
 ENGINE = InnoDB;
 

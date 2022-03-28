@@ -38,10 +38,19 @@
         </div>
     </div>
     {% for room in rooms %} 
+    <form action="/join_room/{{user.username}}/{{room.number}}/{{room.name}}">
     <div>
-        <a href="#">{{room.number}}</a>
-        <a href="/join_room/{{user.username}}/{{room.number}}/{{room.name}}" >Join Room</a>
+        {% if 'private' == room.name %}
+            <a href="#">{{room.number}} {{room.name}}</a>
+            <label id= "keyword" for="private_key"> Enter Passkey:</label>
+            <input id = "keyword" type="text" name="private_key">
+            <button type="submit">Join Room</button>
+        {% else %}
+            <a href="#">{{room.number}} {{room.name}}</a>
+            <button type="submit">Join Room</button>
+        {% endif %}
     </div>
+    </form>
     {% endfor %}
     <!-- <div class="row d-flex justify-content-center" id="main_body">
         <div class="col-6"> 
@@ -100,12 +109,17 @@
             <label>Enter your username:</label>
             <input type="text" name="username">
         </div> -->
+        {% with messages = get_flashed_messages() %}     <!-- declare a variable called messages -->
+                    {% if messages %}                            <!-- check if there are any messages -->
+                        {% for message in messages %}            <!-- loop through the messages -->
+                            <p>{{message}}</p>                   <!-- display each message in a paragraph tag -->
+                        {% endfor %}
+                    {% endif %}
+        {% endwith %}
         <div>
             <label>Select Chat:</label><br>
             <input type="radio" name="radio-choice" id="public_chat" value="public"> </input>
             <label for="public_chat">Public Chat</label>
-            <label>Enter Room Number:</label><br>
-            <input type="text" name="room" value="0"><br>
             <input type="radio" name="radio-choice" id="private_chat" value="private"> </input>
             <label for="private_chat">Private Chat</label>
             <label id= "passkey" for="key"> Enter Passkey:</label>

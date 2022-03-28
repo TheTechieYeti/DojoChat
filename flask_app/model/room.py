@@ -29,8 +29,8 @@ class Room:
     @classmethod
     def create(cls, data):
         # administrator id should be set in data by calling method
-        query = "INSERT INTO rooms (name, administrator_id, number) VALUES "\
-                "(%(name)s, %(administrator_id)s, %(number)s);" 
+        query = "INSERT INTO rooms (name, administrator_id, number,passkey) VALUES "\
+                "(%(name)s, %(administrator_id)s, %(number)s, %(passkey)s);" 
         #new_room_id = MySQLConnection(db).query_db( query, data )
         # admin should automatically be member of the room??
         #user_id = data['administrator_id']
@@ -47,6 +47,21 @@ class Room:
     def update(cls, data):
         # NOTE: Do we allow change of admin?
         query = "UPDATE rooms SET name = %(name)s WHERE id = %(id)s;"
+        return MySQLConnection(db).query_db( query, data )
+
+    @classmethod
+    def check_passkey(cls, data):
+        # NOTE: Do we allow change of admin?
+        query = "SELECT * FROM rooms where number = %(number)s;"
+        results = MySQLConnection(db).query_db( query, data )
+        check = 1
+        print ('Check passkey')
+        check = len(results)
+        print (check)
+        if id == 0:
+            return -1
+        else :
+            return (results[0]['passkey'])
         return MySQLConnection(db).query_db( query, data )
     
     @classmethod
