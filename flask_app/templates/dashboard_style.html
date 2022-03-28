@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Exo+2:wght@700;900&family=Roboto:ital,wght@0,300;0,700;0,900;1,100;1,300;1,700;1,900&display=swap" rel="stylesheet">    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="/flask_app/static/css/style.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="background_grey">
+<div class="container-fluid" >
+    <div class="row orange_bg">
+        <div class="col-8">
+            <ul class="nav nav-tabs  ">
+                <li class="nav-item brand selected">
+                    <a  style = "text-decoration: none;"href="#"><img class="mb-2 ms-2" height="30px"src="../static/images/dojo-logo-png-transparent.png" alt=""><span id= "chat"class="chat m-2">CHAT</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" aria-current="page" href="#">Active</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">Create New Room</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">Account</a>
+                </li>
+                
+              </ul>
+        </div>
+    </div>
+    <div class="row d-flex justify-content-center " id="main_body">
+        <div class="col-6 "> 
+            <div class="row">
+                <h2 class="m-3 mt-5">Welcome Scott</h2>
+            </div>
+            <table class="table shadow blue_bg border border-2 rounded ">
+                <h4>Chat Rooms</h4>
+                <thead>
+                    <tr>
+                        <th scope="col">Room Name</th>
+                        <th scope="col">Population</th>
+                        <th scope="col">Public?</th>
+                        <th scope="col">Admin</th>
+                        <th scope="col">Action</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td scope="'row">Group Projects</td>
+                        <td>5 Members</td>
+                        <td>Yes</td>
+                        <td>Peter</td>
+                    </tr>
+                </tbody>   
+            </table>
+        </div>
+        <!-- <div class="col-1 red_border ">
+            <p>Hellow</p>
+        </div> -->
+    </div>
+    <div class="row d-flex justify-content-center" id="main_body">
+        <div class="col-6"> 
+            <table class="table">
+                <thead>
+                    <h3 class="ms-3 mt-5 mb-5">Here are your recent chats:</h3>
+                    <tr>
+                        <th scope="">Room Name</th>
+                        <th scope="">Attendees</th>
+                        <th scope="">Date</th>
+                        <th scope="">Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for chat in chats %}
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <form action="/chat/{{user.username}}">
+        <!-- <div>
+            <label>Enter your username:</label>
+            <input type="text" name="username">
+        </div> -->
+        <div>
+            <label>Select Chat:</label><br>
+            <input type="radio" name="radio-choice" id="public_chat" value="public"> </input>
+            <label for="public_chat">Public Chat</label>
+            <label>Enter Room Number:</label><br>
+            <input type="text" name="room" value="0"><br>
+            <input type="radio" name="radio-choice" id="private_chat" value="private"> </input>
+            <label for="private_chat">Private Chat</label>
+            <label id= "passkey" for="key"> Enter Passkey:</label>
+            <input id = "passkey" type="text" name="key">
+
+        </div>
+        <button type="submit">Create Chatroom</button>
+    </form>
+</div>
+</body>
+</html>

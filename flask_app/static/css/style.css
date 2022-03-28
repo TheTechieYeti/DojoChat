@@ -1,0 +1,52 @@
+.red_border{
+    border-style: solid;
+    border-color: red;
+}
+.green_border{
+    border-style: solid;
+    border-color: rgb(0, 255, 55);
+}
+*{
+    font-family: 'Roboto', sans-serif;
+}
+.container-fluid{
+    background-color: #0093E9;
+    background-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);
+    height: 1000px;
+}
+.background_grey{
+    background-color: rgb(237, 237, 238)
+}
+.transparent{
+    background-color: transparent;
+}
+
+.blue_bg{
+    background-color: #0093E9;
+}
+.navlogo{
+    height: 30px;
+}
+.lightblue_bg{
+    background-color: #80D0C7;
+}
+.lightblue_bg{
+    background-color: #25318d;
+}
+.chat{
+    color: orangered;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 30px;
+    font-decoration: none;
+}
+.orange_bg{
+    background-color: rgb(230, 184, 98);
+}
+.selected{
+    height: 51px;
+    background-color: #0093E9;
+    border: none;
+}
+.nav{
+    border: none;
+}
