@@ -20,8 +20,25 @@
 .transparent{
     background-color: transparent;
 }
-.opacity{
-    opacity: 30%;
+
+.blue_bg{
+    background-color: #0093E9;
+}
+.lightblue_bg{
+    background-color: #80D0C7;
+}
+#dojo{
+    height: 50px;
+}
+#chat{
+    color: orangered;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 45px;
+}
+#logo{
+    height: 300px;
+    width: auto;
+    margin: auto;
 }
 .card{
     height: 450px;
@@ -65,37 +82,6 @@
 #event_info{
     z-index: auto;
 }
-.nav{
-    color: white;
-    background-color: rgb(143, 138, 138);
-
-    padding-left: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-.nav-links{
-    display: flex;
-    color: white;
-    list-style-type: none;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0px 10px;
-}
-.nav-list{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-li{
-    margin: 0px 10px;
-}
-
-.nav a {
-    color: white;
-    text-decoration: none;
-}
-
 
 
 
