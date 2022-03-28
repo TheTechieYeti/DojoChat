@@ -1,15 +1,19 @@
+from contextlib import nullcontext
 from flask_app import app 
 from flask_app.config.mysqlconnection import MySQLConnection
 from flask import session, flash
 import  pprint
 from datetime import datetime, date
 from flask_app.model.member import Member
+from flask_app.model.user import User
+
 
 db="DojoChat_schema"
 class Room:
-    def __call__(self, data):
+    def __init__(self, data):
         self.id = data['id']
         self.name = data['name']
+        self.number = data['number']
         self.created_at = data['created_at']
         self.updated_at = data['updated_at']
         self.administrator_id = data['administrator_id']
@@ -25,17 +29,18 @@ class Room:
     @classmethod
     def create(cls, data):
         # administrator id should be set in data by calling method
-        query = "INSERT INTO rooms (name, administrator_id) VALUES "\
-                "(%(name)s, %(administrator_id)s);" 
-        new_room_id = MySQLConnection(db).query_db( query, data )
+        query = "INSERT INTO rooms (name, administrator_id, number) VALUES "\
+                "(%(name)s, %(administrator_id)s, %(number)s);" 
+        #new_room_id = MySQLConnection(db).query_db( query, data )
         # admin should automatically be member of the room??
-        user_id = data['administrator_id']
-        data = {
-            'room_id': new_room_id,
-            'user_id': user_id 
-        }
-        query = "INSERT INTO members (room_id, user_id) VALUES "\
-                "(%(room_id)s, %(user_id)s);"
+        #user_id = data['administrator_id']
+        #room_id = new_room_id
+        #new_data = {
+        #    'room_id': room_id,
+        #    'user_id': user_id,
+        #}
+        #query = "INSERT INTO members (room_id, user_id) VALUES "\
+        #"(%(room_id)s, %(user_id)s);"
         return MySQLConnection(db).query_db( query, data )
 
     @classmethod
@@ -43,11 +48,20 @@ class Room:
         # NOTE: Do we allow change of admin?
         query = "UPDATE rooms SET name = %(name)s WHERE id = %(id)s;"
         return MySQLConnection(db).query_db( query, data )
+    
+    @classmethod
+    def remove_admin(cls, data):
+        # NOTE: Do we allow change of admin?
+        #User.update_user_info(data)
+        query = "UPDATE rooms SET administrator_id = %(administrator_id)s where administrator_id = %(id)s;"
+        return MySQLConnection(db).query_db( query, data )
 
     @classmethod
     def delete(cls, data):
         # DELETE members from the room first
-        query = "DELETE FROM members WHERE room_id = %(id)s;"
+        query = "DELETE FROM rooms WHERE administrator_id = %(id)s;"
+        #query = "INSERT INTO rooms (administrator_id) VALUES "\
+        #        "(%(administrator_id)s);"
         deleted = MySQLConnection(db).query_db( query, data )
         # NOTE: commented this out for the moment - should we keep the room
         # and keep the messages related to it??
@@ -92,6 +106,20 @@ class Room:
         return Member(results[0])
 
     @classmethod
+    def get_administrator_from_room_number(cls, data):
+        query = "SELECT administrator_id FROM rooms where number = %(number)s and administrator_id = %(id)s;"
+        results = MySQLConnection(db).query_db( query, data )
+        id = 1
+        print ('#############')
+        id = len(results)
+        print (id)
+        if id == 0:
+            return -1
+        else :
+            return (results[0]['administrator_id'])
+
+
+    @classmethod
     def get_all_user_rooms(cls, data):
         query = "SELECT * FROM rooms LEFT JOIN members ON rooms.id = members.room_id "\
                 "WHERE members.user_id = %(user_id)s;"
@@ -105,3 +133,14 @@ class Room:
             my_room.administrator = Room.get_administrator(data)
             my_rooms.append(my_room)
         return my_rooms
+
+    @classmethod
+    def get_all_rooms(cls):
+        query = "SELECT * FROM rooms"
+        results = MySQLConnection(db).query_db( query)
+        my_rooms = []
+        for row in results:
+            print(row['number'])
+            my_rooms.append( cls(row) )
+        return my_rooms
+        
