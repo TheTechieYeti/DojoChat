@@ -6,7 +6,12 @@ from datetime import datetime, date
 
 db="DojoChat_schema"
 class Member:
-    def __init__(self, data) -> None:
-        self.id = data['id']
-        self.first_name = data['first_name']
-        self.last_name = data['last_name']
+    def __init__(self, data):
+        self.room_id = data['room_id']
+        self.user_id = data['user_id']
+
+    @classmethod
+    def insert_room_id(cls, data):
+        query = "INSERT INTO members (room_id,user_id) VALUES(%(room_id)s,%(user_id)s);"
+        user = MySQLConnection(db).query_db(query, data)
+        return user

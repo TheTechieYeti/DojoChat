@@ -64,6 +64,15 @@ class User:
         WHERE id = %(id)s;'''
         return MySQLConnection(db).query_db(query, data)
     @classmethod
+    def update_user_info(cls,data):
+        query = '''UPDATE users
+        SET first_name = %(first_name)s, 
+        last_name = %(last_name)s, 
+        email = %(email)s,
+        username = %(username)s
+        WHERE id = %(administrator_id)s;'''
+        return MySQLConnection(db).query_db(query, data)
+    @classmethod
     def get_user_by_username(cls, data):
         query = "SELECT * FROM users WHERE username = %(username)s;"
         this_user_info = MySQLConnection(db).query_db(query,data)

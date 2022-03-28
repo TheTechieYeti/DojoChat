@@ -15,6 +15,12 @@
     <input type="text" id="message_input" placeholder="Enter your message here">
     <button type="submit">Send</button>
 </form>
+
+<div>
+    <form id="exit_room" action="/exit_room/{{room}}">
+        <button type="submit">End Chat</button>
+    </form>
+</div>
 </body>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
