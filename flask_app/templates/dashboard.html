@@ -85,7 +85,7 @@
         <div class="col-8">
             <ul class="nav nav-tabs  ">
                 <li class="nav-item brand selected">
-                    <a  style = "text-decoration: none;"href="#"><img class="mb-2 ms-2" height="30px"src="../static/images/dojo-logo-png-transparent.png" alt=""><span id= "chat"class="chat m-2">CHAT</span></a>
+                    <a  style = "text-decoration: none;"href="/dashboard"><img class="mb-2 ms-2" height="30px"src="../static/images/dojo-logo-png-transparent.png" alt=""><span id= "chat"class="chat m-2">CHAT</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" aria-current="page" href="#" >Account</a>
@@ -97,6 +97,30 @@
                     <a class="nav-link" href="/logout">Logout</a>
                 </li> 
             </ul>
+        </div>
+    </div>
+    <div class="row d-flex justify-content-center mt-5">
+        <div class="col-8">
+            <div class="row">
+                <h3>Open ChatRooms</h3>
+            </div>
+            <div id="open_rooms" class="row card shadow blue_bg">
+                {% for room in rooms %} 
+                <form action="/join_room/{{user.username}}/{{room.number}}/{{room.name}}">
+                <div>
+                    {% if 'private' == room.name %}
+                        <a href="#">{{room.number}} {{room.name}}</a>
+                        <label id= "keyword" for="private_key"> Enter Passkey:</label>
+                        <input id = "keyword" type="text" name="private_key">
+                        <button type="submit">Join Room</button>
+                    {% else %}
+                        <a href="#">{{room.number}} {{room.name}}</a>
+                        <button type="submit">Join Room</button>
+                    {% endif %}
+                </div>
+                </form>
+                {% endfor %}
+            </div>
         </div>
     </div>
     {% for room in rooms %} 
