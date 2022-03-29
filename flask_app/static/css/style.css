@@ -30,7 +30,7 @@
 .lightblue_bg{
     background-color: #80D0C7;
 }
-.lightblue_bg{
+.darkblue_bg{
     background-color: #25318d;
 }
 .chat{
@@ -54,4 +54,8 @@
     position: absolute;
     top: 2px;
     z-index: -1;
+}
+#messages{
+    min-height: 400px;
+    width: 80%;
 }
