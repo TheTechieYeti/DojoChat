@@ -12,7 +12,7 @@ bcrypt = Bcrypt(app)
 def log_reg():
     if 'user_id' in session:
         return redirect('/dashboard')
-    return render_template("login_reg.html")
+    return render_template("popover.html")
 
 @app.route('/register', methods=["POST"])         
 def register():

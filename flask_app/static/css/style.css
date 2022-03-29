@@ -50,3 +50,8 @@
 .nav{
     border: none;
 }
+#private_chat_form{
+    position: absolute;
+    top: 2px;
+    z-index: -1;
+}
