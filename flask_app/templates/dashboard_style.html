@@ -18,8 +18,8 @@
         <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title" id="staticBackdropLabel">Create Chat Room</h5>
-            <button type="button" class=" ms-3 btn btn-secondary" onclick="bring_to_top(public_chat_form)">Public</button>
-            <button type="button" class=" ms-3 btn btn-primary" onclick="bring_to_top(private_chat_form)">Private</button>
+            <button type="button" class=" ms-3 btn btn-secondary" onclick="bring_to_top('public_chat_form')">Public</button>
+            <button type="button" class=" ms-3 btn btn-primary" onclick="bring_to_top('private_chat_form')">Private</button>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -29,18 +29,12 @@
                     <input type="text" name="username">
                 </div> -->
                 <div>
-                    <label>Select Chat:</label><br>
                     <input type="hidden" id="public_chat" value="public"> </input>
                     <label for="public_chat">Public Chat</label>
                     <label>Enter Room Number:</label><br>
                     <input type="text" name="room" value="0"><br>
-                    <input type="ra dio" name="radio-choice" id="private_chat" value="private"> </input>
-                    <label for="private_chat">Private Chat</label>
-                    <label id= "passkey" for="key"> Enter Passkey:</label>
-                    <input id = "passkey" type="text" name="key">
-        
                 </div>
-                <button type="submit" class="btn btn-primary">Create Chatroom</button>
+                <button type="submit" class="btn btn-primary mt-2">Create Public Chatroom</button>
             </form>
             <form id="private_chat_form" class="" action="/chat/{{user.username}}">
                 <!-- <div>
@@ -48,18 +42,14 @@
                     <input type="text" name="username">
                 </div> -->
                 <div>
-                    <label>Select Chat:</label><br>
-                    <input type="radio" name="radio-choice" id="public_chat" value="public"> </input>
-                    <label for="public_chat">Public Chat</label>
-                    <label>Enter Room Number:</label><br>
+                    <label>Enter Room Number:</label>
                     <input type="text" name="room" value="0"><br>
-                    <input type="radio" name="radio-choice" id="private_chat" value="private"> </input>
-                    <label for="private_chat">Private Chat</label>
+                    <input type="hidden" id="public_chat" value="public"> </input>
+                    <label for="private_chat">Private Chat</label><br>
                     <label id= "passkey" for="key"> Enter Passkey:</label>
                     <input id = "passkey" type="text" name="key">
-        
                 </div>
-                <button type="submit" class="btn btn-primary">Create Chatroom1</button>
+                <button type="submit" class="btn btn-primary mt-2">Create Private Chatroom</button>
             </form>
         </div>
         <div class="modal-footer">

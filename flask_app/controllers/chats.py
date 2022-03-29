@@ -12,10 +12,10 @@ def chat(usr):
     username = usr
     room = request.args.get('room')
     chat_type = request.args['radio-choice']
+    print(username, room, chat_type)
     #print("##############") 
     #print (chat_type)
-
     if username and room:
         return render_template('chat.html', username=usr, room=room, chat_type=chat_type)
     else:
-        return redirect(url_for('dashboard.html'))
+        return redirect('/dashboard')
