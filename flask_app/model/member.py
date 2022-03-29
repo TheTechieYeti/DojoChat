@@ -7,8 +7,19 @@ from datetime import datetime, date
 db="DojoChat_schema"
 class Member:
     def __init__(self, data):
+        self.id = data['id']
         self.room_id = data['room_id']
         self.user_id = data['user_id']
+
+        if 'first_name' in data:
+            self.first_name = data['first_name']
+        else:
+            self.first_name = ''
+
+        if 'last_name' in data:
+            self.last_name = data['last_name']
+        else:
+            self.last_name = ''
 
     @classmethod
     def insert_room_id(cls, data):

@@ -31,16 +31,15 @@ class Room:
         # administrator id should be set in data by calling method
         query = "INSERT INTO rooms (name, administrator_id, number,passkey) VALUES "\
                 "(%(name)s, %(administrator_id)s, %(number)s, %(passkey)s);" 
-        #new_room_id = MySQLConnection(db).query_db( query, data )
+        new_room_id = MySQLConnection(db).query_db( query, data )
         # admin should automatically be member of the room??
-        #user_id = data['administrator_id']
-        #room_id = new_room_id
-        #new_data = {
-        #    'room_id': room_id,
-        #    'user_id': user_id,
-        #}
-        #query = "INSERT INTO members (room_id, user_id) VALUES "\
-        #"(%(room_id)s, %(user_id)s);"
+        user_id = data['administrator_id']
+        new_data = {
+            'room_id': new_room_id,
+            'user_id': user_id,
+        }
+        query = "INSERT INTO members (room_id, user_id) VALUES "\
+        "(%(room_id)s, %(user_id)s);"
         return MySQLConnection(db).query_db( query, data )
 
     @classmethod
@@ -62,7 +61,8 @@ class Room:
             return -1
         else :
             return (results[0]['passkey'])
-        return MySQLConnection(db).query_db( query, data )
+        # NOTE: commented this out - we never get here
+        #return MySQLConnection(db).query_db( query, data )
     
     @classmethod
     def remove_admin(cls, data):
@@ -118,8 +118,12 @@ class Room:
         query = "SELECT users.id as id, users.first_name as first_name, users.last_name as last_name "\
                 "FROM users LEFT JOIN rooms WHERE rooms.administrator_id = %(administrator_id)s;"
         results = MySQLConnection(db).query_db( query, data )
-        return Member(results[0])
-
+        if results != False:
+            return Member(results[0])
+        else:
+            # query errored out - we don't have a good administrator
+            return None
+            
     @classmethod
     def get_administrator_from_room_number(cls, data):
         query = "SELECT administrator_id FROM rooms where number = %(number)s and administrator_id = %(id)s;"
@@ -159,3 +163,12 @@ class Room:
             my_rooms.append( cls(row) )
         return my_rooms
         
+    @classmethod
+    def get_last_ten_rooms(cls):
+        query = "SELECT * FROM rooms ORDER BY id DESC LIMIT 10;"
+        results = MySQLConnection(db).query_db( query)
+        my_rooms = []
+        for row in results:
+            print(row['number'])
+            my_rooms.append( cls(row) )
+        return my_rooms
