@@ -18,15 +18,12 @@ def log_reg():
 def register():
     if not user.User.validate_user(request.form):
         return redirect ('/')
-    #if not user.User.validate_email(request.form):
-    #    return redirect ('/')
     if not user.User.validate_password(request.form):
         return redirect ('/')
     data = {
         "first_name" : request.form["first_name"],
         "last_name" : request.form["last_name"],
         "username" : request.form["username"],
-        "email" : "",
         "password" : bcrypt.generate_password_hash(request.form["password"]),
     }
     session['user_id'] = user.User.create_user(data)
@@ -53,7 +50,6 @@ def login():
         "username" : request.form["username"],
     }
     print(f'this is my data from my request form {data}')
-    #login_user = user.User.get_user_by_email(data)
     login_user = user.User.get_user_by_username(data)
     if not login_user:
         flash("Please check your username. No user found with that username.")
@@ -91,7 +87,6 @@ def update_user(user_id):
         "first_name" : request.form["first_name"],
         "last_name" : request.form["last_name"],
         "username" : request.form["username"],
-        "email" : "",
         "id" : user_id
     }
     user.User.update_user(data)
