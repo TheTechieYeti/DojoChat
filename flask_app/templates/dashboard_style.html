@@ -13,6 +13,62 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body class="background_grey">
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Create Chat Room</h5>
+            <button type="button" class=" ms-3 btn btn-secondary" onclick="bring_to_top(public_chat_form)">Public</button>
+            <button type="button" class=" ms-3 btn btn-primary" onclick="bring_to_top(private_chat_form)">Private</button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form id="public_chat_form" action="/chat/{{user.username}}">
+                <!-- <div>
+                    <label>Enter your username:</label>
+                    <input type="text" name="username">
+                </div> -->
+                <div>
+                    <label>Select Chat:</label><br>
+                    <input type="hidden" id="public_chat" value="public"> </input>
+                    <label for="public_chat">Public Chat</label>
+                    <label>Enter Room Number:</label><br>
+                    <input type="text" name="room" value="0"><br>
+                    <input type="ra dio" name="radio-choice" id="private_chat" value="private"> </input>
+                    <label for="private_chat">Private Chat</label>
+                    <label id= "passkey" for="key"> Enter Passkey:</label>
+                    <input id = "passkey" type="text" name="key">
+        
+                </div>
+                <button type="submit" class="btn btn-primary">Create Chatroom</button>
+            </form>
+            <form id="private_chat_form" class="" action="/chat/{{user.username}}">
+                <!-- <div>
+                    <label>Enter your username:</label>
+                    <input type="text" name="username">
+                </div> -->
+                <div>
+                    <label>Select Chat:</label><br>
+                    <input type="radio" name="radio-choice" id="public_chat" value="public"> </input>
+                    <label for="public_chat">Public Chat</label>
+                    <label>Enter Room Number:</label><br>
+                    <input type="text" name="room" value="0"><br>
+                    <input type="radio" name="radio-choice" id="private_chat" value="private"> </input>
+                    <label for="private_chat">Private Chat</label>
+                    <label id= "passkey" for="key"> Enter Passkey:</label>
+                    <input id = "passkey" type="text" name="key">
+        
+                </div>
+                <button type="submit" class="btn btn-primary">Create Chatroom1</button>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+        </div>
+    </div>
+</div>
+
 <div class="container-fluid" >
     <div class="row orange_bg">
         <div class="col-8">
@@ -21,16 +77,15 @@
                     <a  style = "text-decoration: none;"href="#"><img class="mb-2 ms-2" height="30px"src="../static/images/dojo-logo-png-transparent.png" alt=""><span id= "chat"class="chat m-2">CHAT</span></a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" aria-current="page" href="#">Active</a>
+                    <a class="nav-link" aria-current="page" href="#" >Active</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">Create New Room</a>
+                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Create New Room</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">Account</a>
-                </li>
-                
-              </ul>
+                    <a class="nav-link" href="#">Account</a>
+                </li> 
+            </ul>
         </div>
     </div>
     <div class="row d-flex justify-content-center " id="main_body">
@@ -110,5 +165,7 @@
         <button type="submit">Create Chatroom</button>
     </form>
 </div>
+<script src="../static/js/script.js"></script>
+<script src="/flask_app/static/js/bootstrap_js/bootstrap.js"></script>
 </body>
 </html>
