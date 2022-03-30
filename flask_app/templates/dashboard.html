@@ -28,7 +28,13 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                
+                {% with messages = get_flashed_messages() %}     <!-- declare a variable called messages -->
+                    {% if messages %}                            <!-- check if there are any messages -->
+                        {% for message in messages %}            <!-- loop through the messages -->
+                            <p>{{message}}</p>                   <!-- display each message in a paragraph tag -->
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
                 <form id="public_chat_form" action="/chat/{{user.username}}">
                     <!-- <div>
                         <label>Enter your username:</label>
@@ -43,30 +49,33 @@
                 {% endwith %}
                     <div>
                         <input type="hidden" id="public_chat" name="radio-choice" value="public"> </input>
-                        <label for="public_chat">Public Chat</label>
                         <label>Enter Room Number:</label><br>
                         <input type="text" name="room" value="0"><br>
+                        <label>Enter Room Subject:</label><br>
+                        <input type="text" name="subject" value="Chat"><br>
                     </div>
                     <button type="submit" class="btn btn-primary mt-2">Create Public Chatroom</button>
                 </form>
-                <form id="private_chat_form" class="" action="/chat/{{user.username}}">
-                    <!-- <div>
-                        <label>Enter your username:</label>
-                        <input type="text" name="username">
-                    </div> -->
-                    {% with messages = get_flashed_messages() %}     <!-- declare a variable called messages -->
+                {% with messages = get_flashed_messages() %}     <!-- declare a variable called messages -->
                     {% if messages %}                            <!-- check if there are any messages -->
                         {% for message in messages %}            <!-- loop through the messages -->
                             <p>{{message}}</p>                   <!-- display each message in a paragraph tag -->
                         {% endfor %}
                     {% endif %}
-                    {% endwith %}
+                {% endwith %}
+                <form id="private_chat_form" class="" action="/chat/{{user.username}}">
+                    <!-- <div>
+                        <label>Enter your username:</label>
+                        <input type="text" name="username">
+                    </div> -->
+                    
                     <div>
                         <label>Enter Room Number:</label>
                         <input type="text" name="room" value="0"><br>
                         <input type="hidden" id="public_chat" value="public"> </input>
                         <input type="hidden" id="public_chat" name="radio-choice" value="private"> </input>
-                        <label for="private_chat">Private Chat</label><br>
+                        <label>Enter Room Subject:</label><br>
+                        <input type="text" name="subject" value="Chat"><br>
                         <label id= "passkey" for="key"> Enter Passkey:</label>
                         <input id = "passkey" type="text" name="key">
                     </div>
@@ -106,15 +115,15 @@
             </div>
             <div id="open_rooms" class="row card shadow blue_bg">
                 {% for room in rooms %} 
-                <form action="/join_room/{{user.username}}/{{room.number}}/{{room.name}}">
+                <form action="/join_room/{{user.username}}/{{room.number}}/{{room.name}}/{{room.subject}}">
                 <div>
                     {% if 'private' == room.name %}
-                        <a href="#">{{room.number}} {{room.name}}</a>
+                        <a href="#">Topic : {{room.subject}} Room Type :{{room.name}} </a>
                         <label id= "keyword" for="private_key"> Enter Passkey:</label>
                         <input id = "keyword" type="text" name="private_key">
                         <button type="submit">Join Room</button>
                     {% else %}
-                        <a href="#">{{room.number}} {{room.name}}</a>
+                        <a href="#">Topic: {{room.subject}} Room Type: {{room.name}} </a>
                         <button type="submit">Join Room</button>
                     {% endif %}
                 </div>
@@ -123,7 +132,7 @@
             </div>
         </div>
     </div>
-    {% for room in rooms %} 
+    <!-- {% for room in rooms %} 
     <form action="/join_room/{{user.username}}/{{room.number}}/{{room.name}}">
     <div>
         {% if 'private' == room.name %}
@@ -137,7 +146,7 @@
         {% endif %}
     </div>
     </form>
-    {% endfor %}
+    {% endfor %} -->
     <!-- <div class="row d-flex justify-content-center" id="main_body">
         <div class="col-6"> 
             <h2 class="m-3 mt-5">Welcome {{session['first_name']}}</h2>
