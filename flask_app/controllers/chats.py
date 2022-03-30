@@ -1,10 +1,10 @@
 from flask_app import app
-from flask import render_template, redirect, session, flash, request, url_for
+from flask import render_template, redirect, session, flash, request, url_for, jsonify
 from flask_app.config.mysqlconnection import MySQLConnection
 from flask_app.model.user import User
 from flask_app.model.room import Room
 from flask_app.model.member import Member
-
+from flask_app.model.message import Message
 
 import random
 
@@ -24,6 +24,7 @@ def chat(usr):
     x = random.randint(1,50)
     print("Random NUmber Generator")
     print(x)
+    # wil - i need the room object passed to chat.html so i can log messages
     if chat_type == "public":
         data = {
             "name" : chat_type,
@@ -31,8 +32,8 @@ def chat(usr):
             "number" : x,
             "passkey" : ""
         }
-        Room.create(data)
-        return render_template('chat.html', username=username, room=x, chat_type=chat_type)
+        this_room = Room.create(data)
+        return render_template('chat.html', username=username, room=x, chat_type=chat_type, chat_room=this_room)
     elif chat_type == "private" :
         if request.args['key'] == "":
             flash("Enter a passkey to create a private chat room")
@@ -43,8 +44,8 @@ def chat(usr):
             "number" : x,
             "passkey" : request.args['key']
         }
-        Room.create(data)
-        return render_template('chat.html', username=username, room=x, chat_type=chat_type)
+        this_room = Room.create(data)
+        return render_template('chat.html', username=username, room=x, chat_type=chat_type, chat_room = this_room)
     #member.Member.insert_room_id(data)
     #Room.create(data)
     else:
@@ -66,6 +67,11 @@ def join(usr,room,chat_type):
             flash("Wrong passkey, please enter the correct passkey")
             return redirect("/dashboard",)
     if username and room:
+        # need to pass the whole room object to the chat page to log messages to the room
+        data = {
+            'number' : room
+        }
+        this_room = Room.get_room_by_number(data)
         if chat_type == "private" :
             data = {
                 'number' : room,
@@ -73,12 +79,12 @@ def join(usr,room,chat_type):
             check_key = Room.check_passkey(data)
             if check_key == key :
                 print (check_key,key)
-                return render_template('chat.html', username=username, room=room, chat_type=chat_type)
+                return render_template('chat.html', username=username, room=room, chat_type=chat_type, chat_room=this_room)
             else :
                 flash("Incorrect passkey. Please enter the right passkey")
                 return redirect("/dashboard",)
         elif chat_type == "public" :
-            return render_template('chat.html', username=username, room=room, chat_type=chat_type)
+            return render_template('chat.html', username=username, room=room, chat_type=chat_type, chat_room=this_room)
     else:
         return redirect("/dashboard",)
 
@@ -106,3 +112,17 @@ def exit_room(room):
     
     #Room.delete(data)
     return redirect("/dashboard", )
+
+@app.route('/message/log', methods=['POST'])
+def log_message():
+    #POST request
+    if request.method == 'POST':
+        print('Message to log in POST method: ')
+        print(request.get_json())
+        data = request.get_json()
+        Message.post(data)
+        return 'OK',200
+    #GET request - we shouldn't get here
+    else:
+        message = {'greeting': 'If you got here you did something wrong!'}
+        return 'OK',200
