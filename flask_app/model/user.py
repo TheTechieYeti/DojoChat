@@ -13,6 +13,7 @@ class User:
         self.last_name = data['last_name']
         self.username= data['username']
         self.password = data['password']
+        self.logged_in = data['logged_in']
         # self.img = data['img_path']
         self.created_at = data['created_at']
         self.updated_at = data['updated_at']
@@ -31,6 +32,12 @@ class User:
         results = MySQLConnection(db).query_db(query, data)
         this_user = cls(MySQLConnection(db).query_db(query,data)[0])
         return this_user
+    
+    @classmethod
+    def logon(cls,data):
+        query = "UPDATE users SET logged_in = %(on)s where id = %(id)s"
+        results = MySQLConnection(db).query_db(query, data)
+
     @classmethod
     def get_one_user(cls, data):
         data1 = {
@@ -45,15 +52,23 @@ class User:
         query = "SELECT * FROM users"
         all_users = []
         for i in MySQLConnection(db).query_db(query):
-            all_users.append(cls(i))
+            print(i['first_name'])
+            if i['first_name'] == None :
+                print ("empty row")
+            else :
+                all_users.append(cls(i))
         return all_users
     @classmethod
     def create_user(cls, data): 
+        print ("creating user")
+        print (data)
         query = "INSERT INTO users (first_name, last_name, username, password) VALUES(%(first_name)s, %(last_name)s, %(username)s, %(password)s);"
         user = MySQLConnection(db).query_db(query, data)
         return user
     @classmethod
     def update_user(cls,data):
+        print ("updating user")
+        print (data)
         query = '''UPDATE users
         SET first_name = %(first_name)s, 
         last_name = %(last_name)s, 

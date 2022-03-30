@@ -131,6 +131,33 @@
                 {% endfor %}
             </div>
         </div>
+        <div class="col-3">
+            <div class ="col">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Online Users</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for users in users_list %}
+                        {% if users.id != session.user_id %}
+                        {% if users.logged_in == 1 %}
+                        <tr>
+                            <td>{{users.first_name}} {{users.last_name}} <img src="../static/images/online.jpeg" alt="online_img" height="20px" width="20px"></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td>{{users.first_name}} {{users.last_name}} <img src="../static/images/offline.jpg" alt="offline_img" height="20px" width="20px"></td>
+                        </tr>
+                        {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>   
+                </table>
+            </div>
+
+        </div>
     </div>
     <!-- {% for room in rooms %} 
     <form action="/join_room/{{user.username}}/{{room.number}}/{{room.name}}">

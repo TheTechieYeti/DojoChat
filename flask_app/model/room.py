@@ -6,6 +6,7 @@ import  pprint
 from datetime import datetime, date
 from flask_app.model.member import Member
 from flask_app.model.user import User
+from flask_app.model.room_att import Room_att
 
 
 db="DojoChat_schema"
@@ -34,14 +35,19 @@ class Room:
                 "(%(name)s, %(administrator_id)s, %(number)s, %(passkey)s, %(subject)s);" 
         new_room_id = MySQLConnection(db).query_db( query, data )
         # admin should automatically be member of the room??
+        query = "INSERT INTO room_att (user_id, rnumber) VALUES "\
+                "(%(administrator_id)s, %(number)s);" 
+        room_att_q = MySQLConnection(db).query_db( query, data )
+
         user_id = data['administrator_id']
+        number = data['number']
         new_data = {
-            'room_id': new_room_id,
+            'room_id': number,
             'user_id': user_id,
         }
         query = "INSERT INTO members (room_id, user_id) VALUES "\
         "(%(room_id)s, %(user_id)s);"
-        return MySQLConnection(db).query_db( query, data )
+        return MySQLConnection(db).query_db( query, new_data )
 
     @classmethod
     def update(cls, data):
@@ -99,6 +105,18 @@ class Room:
         # and keep the messages related to it??
         #query = "DELETE FROM rooms WHERE id = %(id)s;"
         #return MySQLConnection(db).query_db( query, data )
+    
+    @classmethod
+    def delete_room(cls, data):
+        # DELETE members from the room first
+        query = "DELETE FROM rooms WHERE number = %(number)s;"
+        #query = "INSERT INTO rooms (administrator_id) VALUES "\
+        #        "(%(administrator_id)s);"
+        deleted = MySQLConnection(db).query_db( query, data )
+        # NOTE: commented this out for the moment - should we keep the room
+        # and keep the messages related to it??
+        #query = "DELETE FROM rooms WHERE id = %(id)s;"
+        #return MySQLConnection(db).query_db( query, data )
 
     @classmethod
     def join(cls, data):
@@ -123,6 +141,20 @@ class Room:
         for result in results:
             members.append(cls(result))
         return members
+
+    @classmethod
+    def get_members_in_room (cls,data):
+        query = "SELECT * FROM members where room_id = %(number)s;"
+        results = MySQLConnection(db).query_db( query, data )
+        check = 0
+        print ('Check members in room')
+        check = len(results)
+        print (check)
+        if check == 0:
+            return -1
+        else :
+            return 1
+        return 0
 
     @classmethod
     def clear_members(cls, data):

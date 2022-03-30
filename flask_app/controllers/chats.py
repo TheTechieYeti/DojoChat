@@ -3,6 +3,7 @@ from flask import render_template, redirect, session, flash, request, url_for
 from flask_app.config.mysqlconnection import MySQLConnection
 from flask_app.model.user import User
 from flask_app.model.room import Room
+from flask_app.model.room_att import Room_att
 from flask_app.model.member import Member
 
 
@@ -82,15 +83,24 @@ def join(usr,room,chat_type,subject):
         if chat_type == "private" :
             data = {
                 'number' : room,
+                "administrator_id" : session['user_id'],
             }
             check_key = Room.check_passkey(data)
             if check_key == key :
                 print (check_key,key)
+                Room_att.join(data)
                 return render_template('chat.html', username=username, room=room, chat_type=chat_type,subject=subject)
             else :
                 flash("Incorrect passkey. Please enter the right passkey")
                 return redirect("/dashboard",)
         elif chat_type == "public" :
+            data = {
+                'number' : room,
+                "administrator_id" : session['user_id'],
+            }
+            print("Joining room from lobby")
+            Room_att.join(data)
+
             return render_template('chat.html', username=username, room=room, chat_type=chat_type,subject=subject)
     else:
         return redirect("/dashboard",)
@@ -102,6 +112,8 @@ def exit_room(room):
         'id' : session['user_id'],
         'number' : room,
     }
+    Room_att.remove_user(data)
+    room_info = Room.get_members_in_room(data)
     admin_data = Room.get_administrator_from_room_number(data)
     if admin_data == session['user_id']:
         print('removing admin privlage for user_id',admin_data)
@@ -112,6 +124,14 @@ def exit_room(room):
         Room.remove_admin(new_data)
     else:
         print('user not admin')
+    
+    data = {
+        'id' : session['user_id'],
+        'number' : room,
+    }
+    attendence = Room_att.check_room_users(data)
+    if attendence == 0:
+        Room.delete_room(data)
     #if (admin == session['user_id']):
     #    print(admin,session['user_id'])
     #else:
