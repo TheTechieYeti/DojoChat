@@ -17,37 +17,40 @@ def review_chat():
 def chat(usr):
         
     username = usr;
-    room = request.args.get('room')
+    room = int(request.args.get('room'))
     chat_type = request.args['radio-choice']
     subject = request.args['subject']
     #print("*************") 
     #print (request.args['key'])
     if room == 0 :
-        flash("please enter a different room number other than 0")
+        flash(f"please enter a {chat_type} room number other than 0", "Chatroom_Form")
+        print("Enter a room number other than 0")
         return redirect("/dashboard",)
     data = {
-        "number" : room,
+        "number" : room, 
     }
     check_room = Room.check_room(data)
     if check_room == 1:
+        flash(f"That room number is already in use. Please select a different one", "Chatroom_Form")
         return redirect("/dashboard",)
 
     #x = random.randint(1,50)
     print("Random NUmber")
     print(room)
-    if chat_type == "public":
+    if chat_type == "Public":
         data = {
             "name" : chat_type,
             "administrator_id" : session['user_id'],
             "number" : room,
             "passkey" : "",
-            "subject" : request.args['subject'],
+            "subject" : request.args['subject'], 
         }
         Room.create(data)
         return render_template('chat.html', username=username, room=room, chat_type=chat_type,subject=subject)
-    elif chat_type == "private" :
+    elif chat_type == "Private" :
         if request.args['key'] == "":
-            flash("Enter a passkey to create a private chat room")
+            print("Enter a passkey to create a private chat room", "Chatroom_Form")
+            flash("Enter a passkey to create a Private chat room",  "Chatroom_Form")
             return redirect("/dashboard",)
         data = {
             "name" : chat_type,
@@ -70,17 +73,17 @@ def join(usr,room,chat_type,subject):
     room = room
     chat_type = chat_type
     subject = subject
-    #print("##############") 
+    print("##############") 
     #print (chat_type)
-    if chat_type == "private" :
+    if chat_type == "Private" :
         print("joining private chatroom")
         print(request.args['private_key'])
         key = request.args['private_key']
         if key == "" :
-            flash("Wrong passkey, please enter the correct passkey")
+            flash("Wrong passkey, please enter the correct passkey","Private")
             return redirect("/dashboard",)
     if username and room:
-        if chat_type == "private" :
+        if chat_type == "Private" :
             data = {
                 'number' : room,
                 "administrator_id" : session['user_id'],
@@ -91,9 +94,9 @@ def join(usr,room,chat_type,subject):
                 Room_att.join(data)
                 return render_template('chat.html', username=username, room=room, chat_type=chat_type,subject=subject)
             else :
-                flash("Incorrect passkey. Please enter the right passkey")
+                flash("Incorrect passkey. Please enter the right passkey", "Private")
                 return redirect("/dashboard",)
-        elif chat_type == "public" :
+        elif chat_type == "Public" :
             data = {
                 'number' : room,
                 "administrator_id" : session['user_id'],
