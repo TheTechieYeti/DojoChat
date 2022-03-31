@@ -31,4 +31,3 @@ class Message:
         query = "SELECT id, first_name, last_name FROM users WHERE id = %(user_id)s;"
         results = MySQLConnection(db).query_db(query, data)
         return Member(results[0])
-
