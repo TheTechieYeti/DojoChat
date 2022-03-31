@@ -18,19 +18,29 @@ class Room:
         self.updated_at = data['updated_at']
         self.administrator_id = data['administrator_id']
         self.subject = data['subject']
-        self.administrator = None
         self.members = []
+        # populate the administrator if we have one
+        admin = {
+            'administrator_id': self.administrator_id
+        }
+        self.administrator = Room.get_administrator(admin)
 
     @classmethod
     def get(cls,data):
-        query = "SELECT rooms WHERE id = %(id)s;"
+        query = "SELECT * FROM rooms WHERE id = %(id)s;"
         results = MySQLConnection(db).query_db(query, data)
+        return cls(results[0])
+
+    @classmethod
+    def get_room_by_number(cls,data):
+        query = "SELECT * FROM rooms where number = %(number)s;"
+        results = MySQLConnection(db).query_db( query, data )
         return cls(results[0])
 
     @classmethod
     def create(cls, data):
         # administrator id should be set in data by calling method
-        query = "INSERT INTO rooms (name, administrator_id, number, passkey, subject) VALUES "\
+        query = "INSERT INTO rooms (name, administrator_id, number ,passkey, subject) VALUES "\
                 "(%(name)s, %(administrator_id)s, %(number)s, %(passkey)s, %(subject)s);" 
         new_room_id = MySQLConnection(db).query_db( query, data )
         # admin should automatically be member of the room??
@@ -41,6 +51,17 @@ class Room:
         }
         query = "INSERT INTO members (room_id, user_id) VALUES "\
         "(%(room_id)s, %(user_id)s);"
+        member_insert = MySQLConnection(db).query_db( query, new_data )
+        # wil - have to get the room we just made and return it
+        data = {
+            'id': new_room_id
+        }
+        return Room.get(data)
+
+    @classmethod
+    def update(cls, data):
+        # NOTE: Do we allow change of admin?
+        query = "UPDATE rooms SET name = %(name)s WHERE id = %(id)s;"
         return MySQLConnection(db).query_db( query, data )
 
     @classmethod
@@ -102,26 +123,33 @@ class Room:
 
     @classmethod
     def join(cls, data):
+        # wil - this is messy but make sure we don't already have an entry in the table
+        query = "SELECT * FROM members WHERE room_id = %(room_id)s AND user_id = %(user_id)s;"
+        results = MySQLConnection(db).query_db( query, data )
+        if (len(results) > 0):
+            # it's already in the table
+            return 0
+
         query = "INSERT INTO members (room_id, user_id) VALUES "\
-                "(%(id)s, %(user_id)s);"
+                "(%(room_id)s, %(user_id)s);"
         return MySQLConnection(db).query_db( query, data )
 
     @classmethod
     def leave(cls, data):
-        query = "DELETE FROM members WHERE room_id = %(id)s AND "\
+        query = "DELETE FROM members WHERE room_id = %(room_id)s AND "\
                 "user_id = %(user_id)s;"
         return MySQLConnection(db).query_db( query, data )
 
     @classmethod
     def get_members(cls, data):
-        query = "SELECT u.id, u.first_name, u.last_name "\
+        query = "SELECT u.id, u.first_name, u.last_name, u.username FROM users AS u "\
                 "LEFT JOIN members ON u.id = members.user_id "\
                 "LEFT JOIN rooms ON rooms.id = members.room_id "\
-                "FROM users as u WHERE u.id = %(id)s;"
+                "WHERE rooms.id = %(room_id)s;"
         results = MySQLConnection(db).query_db( query, data )
         members = []
         for result in results:
-            members.append(cls(result))
+            members.append(Member(result))
         return members
 
     @classmethod
@@ -132,15 +160,22 @@ class Room:
 
     @classmethod
     def get_administrator(cls, data):
-        query = "SELECT users.id as id, users.first_name as first_name, users.last_name as last_name "\
-                "FROM users LEFT JOIN rooms WHERE rooms.administrator_id = %(administrator_id)s;"
+        query = "SELECT users.id as id, users.first_name as first_name, users.last_name as last_name, users.username as username "\
+                "FROM users LEFT JOIN rooms ON users.id = rooms.administrator_id WHERE rooms.administrator_id = %(administrator_id)s;"
         results = MySQLConnection(db).query_db( query, data )
-        if results != False:
+        if (results != False) and (len(results)>0):
             return Member(results[0])
         else:
             # query errored out - we don't have a good administrator
-            return None
-            
+            # wil - return a generic admin since we don't really have one but 
+            # we need one to list the room correctly
+            data = {
+                'first_name': 'No',
+                'last_name': 'Administrator',
+                'username': 'NoAdmin'
+            }
+            return Member(data)
+
     @classmethod
     def get_administrator_from_room_number(cls, data):
         query = "SELECT administrator_id FROM rooms where number = %(number)s and administrator_id = %(id)s;"

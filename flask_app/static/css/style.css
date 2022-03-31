@@ -63,3 +63,15 @@
     min-height: 200px;
     width: 80%;
 }
+.tables-rooms {
+    border: 2px black solid;
+    width: 80%;
+    margin-left: 10%;
+    margin-top: 10%
+}
+.th-top {
+    width: 50%
+}
+.room-list {
+    width: 100%
+}
