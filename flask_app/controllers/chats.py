@@ -17,17 +17,17 @@ def review_chat():
 def chat(usr):
         
     username = usr;
-    room = request.args.get('room')
+    room = int(request.args.get('room'))
     chat_type = request.args['radio-choice']
     subject = request.args['subject']
     #print("*************") 
     #print (request.args['key'])
     if room == 0 :
-        flash("please enter a different room number other than 0")
+        flash("please enter a different room number other than 0", "Chatroom_Form")
         print("Enter a room number other than 0")
         return redirect("/dashboard",)
     data = {
-        "number" : room,
+        "number" : room, 
     }
     check_room = Room.check_room(data)
     if check_room == 1:
@@ -48,8 +48,8 @@ def chat(usr):
         return render_template('chat.html', username=username, room=room, chat_type=chat_type,subject=subject)
     elif chat_type == "private" :
         if request.args['key'] == "":
-            print("Enter a passkey to create a private chat room")
-            flash("Enter a passkey to create a private chat room")
+            print("Enter a passkey to create a private chat room", "Chatroom Form")
+            flash("Enter a passkey to create a private chat room",  "Chatroom Form")
             return redirect("/dashboard",)
         data = {
             "name" : chat_type,

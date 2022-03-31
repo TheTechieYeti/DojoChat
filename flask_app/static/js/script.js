@@ -9,15 +9,13 @@ function bring_to_top(params) {
     document.getElementById(params).style.zIndex=1;
     document.getElementById(params).style.visibility="visible";
 }
-var myModal = document.getElementById('myModal')
-var myInput = document.getElementById('myInput')
 
-myModal.addEventListener('shown.bs.modal', function () {
-  myInput.focus()
-})
 
 function flash_messages() {
-  let messages = document.querySelector('.flash_message')
-  console.log(messages)
+  if (document.querySelector('.chatroom_form_msg')){
+    document.getElementById('chat_room_form_button').click()
+  }
+  
+  
 }
 flash_messages()

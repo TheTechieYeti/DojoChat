@@ -21,13 +21,25 @@
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                <div class="row mt-3 ms-3 chatroom_form_msg">
+                    <ul class="flashes list-unstyled">
+                        {% for category, message in messages %}
+                        <li class="{{ Chatroom_Form }}"><img src="../static/images/error.png" alt="Error Icon">  {{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                       
+                    {% endif %}
+                    {% endwith %}
                 {% with messages = get_flashed_messages() %}     <!-- declare a variable called messages -->
                 {% if messages %} 
-            <div class="row mt3 ms-3">                         <!-- check if there are any messages -->
+            <!-- <div class="row mt3 ms-3">                         check if there are any messages -->
                     {% for message in messages %}            <!-- loop through the messages -->
-                        <p class="flash_message"><img src="../static/images/error.png" alt="Error Icon">{{message}}</p>                   <!-- display each message in a paragraph tag -->
+                        <!-- <p class="flash_message">{{message}}</p>                   display each message in a paragraph tag -->
                     {% endfor %}
-            </div> 
+            <!-- </div>  -->
                 {% endif %}
             {% endwith %}
             <div class="modal-header">
@@ -90,7 +102,7 @@
                     <a class="nav-link" aria-current="page" href="#" >Account</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Create New Room</a>
+                    <a class="nav-link" id="chat_room_form_button" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Create New Room</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/logout">Logout</a>
