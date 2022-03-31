@@ -24,8 +24,14 @@ class Room:
 
     @classmethod
     def get(cls,data):
-        query = "SELECT rooms WHERE id = %(id)s;"
+        query = "SELECT * FROM rooms WHERE id = %(id)s;"
         results = MySQLConnection(db).query_db(query, data)
+        return cls(results[0])
+
+    @classmethod
+    def get_room_by_number(cls,data):
+        query = "SELECT * FROM rooms where number = %(number)s;"
+        results = MySQLConnection(db).query_db( query, data )
         return cls(results[0])
 
     @classmethod
@@ -47,7 +53,14 @@ class Room:
         }
         query = "INSERT INTO members (room_id, user_id) VALUES "\
         "(%(room_id)s, %(user_id)s);"
-        return MySQLConnection(db).query_db( query, new_data )
+
+        member_insert = MySQLConnection(db).query_db( query, data )
+        # wil - have to get the room we just made and return it
+        data = {
+            'id': new_room_id
+        }
+        return Room.get(data)
+
 
     @classmethod
     def update(cls, data):
