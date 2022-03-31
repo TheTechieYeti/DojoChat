@@ -30,7 +30,7 @@
 .lightblue_bg{
     background-color: #80D0C7;
 }
-.lightblue_bg{
+.darkblue_bg{
     background-color: #25318d;
 }
 .chat{
@@ -49,4 +49,20 @@
 }
 .nav{
     border: none;
+}
+#private_chat_form{
+    position: absolute;
+    top: 2px;
+    z-index: -1;
+}
+#messages{
+    min-height: 400px;
+    width: 80%;
+}
+#open_rooms{
+    min-height: 200px;
+    width: 80%;
+}
+.card{
+    width: 100%;
 }

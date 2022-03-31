@@ -35,6 +35,12 @@
     font-family: 'Exo 2', sans-serif;
     font-size: 45px;
 }
+.darkblue_bg{
+    background-color: #8b95df;
+}
+.lightblue_bg{
+    background-color: #80D0C7;
+}
 #logo{
     height: 300px;
     width: auto;

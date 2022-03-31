@@ -4,7 +4,7 @@ from flask import session, flash
 import  pprint
 import re
 from datetime import datetime, date
-db="DojoChat_schema"
+db="dojochat_schema"
 
 class User:
     def __init__(self, data):
@@ -89,7 +89,7 @@ class User:
             flash("Please enter a first name")
             is_valid = False
         elif len(user['first_name']) < 3:
-            flash("First must be at least 2 characters.")
+            flash("First name must be at least 2 characters.")
             is_valid = False
         if not user['last_name']:
             flash("Please enter a last name")

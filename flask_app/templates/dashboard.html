@@ -5,39 +5,241 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="/flask_app/static/css/style.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}"> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Exo+2:wght@700;900&family=Roboto:ital,wght@0,300;0,700;0,900;1,100;1,300;1,700;1,900&display=swap" rel="stylesheet">    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> 
     <link rel="stylesheet" href="/flask_app/static/css/style.css">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body class="background_grey">
-<div class="container" >
-    <div class="row nav pt-3 pb-3 color-white d-flex" id="nav_bar">
-        <div class="col fs-5 border-end border-5 border-white d-flex justify-content-start ">
-            <div><a href="/dashboard">iSport</a></div>
-        </div>
-        <div class="col fs-5 border-end border-5 border-white d-flex justify-content-center" >
-            <div><a href="/event/new" class="fs-5">New Event</a></div>
-        </div>
-        <div class="col fs-5 border-end border-5 border-white d-flex justify-content-center">
-            <div><a href="/event/search">Search</a></div>
-        </div>
-        <div class="col fs-5 border-end border-5 border-white d-flex justify-content-center">
-            <div><a href="/logout">Logout</a></div>
-        </div>
-        <div class="col fs-5 d-flex d-flex justify-content-center">
-            <div class="row">
-                <div class="col-3">
+    <!-- Modal for chat room creation -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                {% with messages = get_flashed_messages(category_filter=["Chatroom_Form"]) %}
+                    {% if messages %}
+                <div class="row mt-3 ms-3 chatroom_form_msg">
+                    <ul class="message list-unstyled">
+                        {% for msg in messages %}
+                        <li class=""><img src="../static/images/error.png" alt="Error Icon">  {{ msg }}</li>
+                        {% endfor %}
+                    </ul>
                 </div>
-                <div class="col-6 fs-6 m-0 mt-1">Account</div>
-                <div class="col-3">
-                    <a href="/logout"><img class = " rounded" height = "20px" src="{{ url_for('static', filename= 'images/logout.png') }}" alt="User Image">
-                    </a>
+                    {% endif %}
+                    {% endwith %}
+
+                    <!-- {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                <div class="row mt-3 ms-3 chatroom_form_msg">
+                    <ul class="flashes">
+                        {% for category, message in messages %}
+                        <li class="{{ Chatroom_Form }}"><img src="../static/images/error.png" alt="Error Icon">  {{ message }}</li>
+                        {% endfor %}
+                    </ul>
                 </div>
+                    {% endif %}
+                    {% endwith %} -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Create Chat Room</h5>
+                <button type="button" class=" ms-3 btn btn-secondary" onclick="bring_to_top('public_chat_form')">Public</button>
+                <button type="button" class=" ms-3 btn btn-primary" onclick="bring_to_top('private_chat_form')">Private</button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                
+            </div>
+            <div class="modal-body">
+                <form id="public_chat_form" action="/chat/{{user.username}}">
+                    <!-- <div>
+                        <label>Enter your username:</label>
+                        <input type="text" name="username">
+                    </div> -->
+                    
+                    <div>
+                        <input type="hidden" id="public_chat" name="radio-choice" value="Public"> </input>
+                        <label>Enter Room Number:</label><br>
+                        <input type="text" name="room" value="0"><br>
+                        <label>Enter Room Subject:</label><br>
+                        <input type="text" name="subject" value="Chat"><br>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-2">Create Public Chatroom</button>
+                </form>
+                <form id="private_chat_form" class="" action="/chat/{{user.username}}">
+                    <!-- <div>
+                        <label>Enter your username:</label>
+                        <input type="text" name="username">
+                    </div> -->
+                    
+                    <div>
+                        <label>Enter Room Number:</label>
+                        <input type="text" name="room" value="0"><br>
+                        <input type="hidden" id="public_chat" value="public"> </input>
+                        <input type="hidden" id="public_chat" name="radio-choice" value="Private"> </input>
+                        <label>Enter Room Subject:</label><br>
+                        <input type="text" name="subject" value="Chat"><br>
+                        <label id= "passkey" for="key"> Enter Passkey:</label>
+                        <input id = "passkey" type="text" name="key">
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-2">Create Private Chatroom</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
             </div>
         </div>
     </div>
-    {% for room in rooms %} 
+<div class="container-fluid" >
+    <!-- NAV BAR -->
+    <div class="row orange_bg">   
+        <div class="col-8">
+            <ul class="nav nav-tabs  ">
+                <li class="nav-item brand selected">
+                    <a  style = "text-decoration: none;"href="/dashboard"><img class="mb-2 ms-2" height="30px"src="../static/images/dojo-logo-png-transparent.png" alt=""><span id= "chat"class="chat m-2">CHAT</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="#" >Account</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="chat_room_form_button" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Create New Room</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li> 
+            </ul>
+        </div>
+    </div>
+    <div class="row d-flex justify-content-start mt-5 ms-1">
+        <div class="col-10">
+            <!-- Header -->
+            <div class="row">
+                <h3>Open ChatRooms</h3>
+            </div>
+            <!-- Flash Messages -->
+            <div class="row">
+                {% with messages = get_flashed_messages(category_filter=["Private"]) %}
+                    {% if messages %}
+                <div class="row mt-3 ms-3 ">
+                    <ul class="list-unstyled">
+                        {% for msg in messages %}
+                        <li class=""><img src="../static/images/error.png" alt="Error Icon">  {{ msg }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                    {% endif %}
+                    {% endwith %}
+            </div>
+            <!-- Rooms & Users Card -->
+                <div id="open_rooms" class="row card shadow blue_bg alight-self-end ">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Room #</th>
+                                <th scope="col">Subject</th>
+                                <th scope="col">Type</th>
+                                <th scope="col"> </th>
+                                <th scope="col"> Join </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                    {% for room in rooms %}
+                    <form action="/join_room/{{user.username}}/{{room.number}}/{{room.name}}/{{room.subject}}">
+                    {% if 'Private' == room.name %}
+                            <tr>
+                                <th scope="row">{{room.id}}</th>
+                                {% if not room.subject %}
+                                <td>None</td>
+                                {%else%}
+                                <td>{{room.subject}}</td>
+                                {% endif %}
+                                <td>{{room.name}}</td>
+                                <td><label id= "keyword" for="private_key"> Enter Passkey:</label>
+                                    <input id = "keyword" type="text" name="private_key"></td>
+                                <td><button type="submit">Join</button></td>
+                            </tr>
+                    {% else %}
+                            <tr>
+                                <th scope="row">{{room.id}}</th>
+                                {% if not room.subject %}
+                                <td>None</td>
+                                {%else%}
+                                <td>{{room.subject}}</td>
+                                {% endif %}
+                                <td>{{room.name}}</td>
+                                <td> </td>
+                                <td><button type="submit">Join</button></td>
+                            </tr>
+                    {% endif %}
+                        <!-- <p>Topid: {{room.subject}} Room Type: {{room.name}}</p>
+                        <label id= "keyword" for="private_key"> Enter Passkey:</label>
+                        <input id = "keyword" type="text" name="private_key">
+                        <button type="submit">Join Room</button> -->
+                    </form>
+                    {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+        </div>
+        <div class="col-2">
+            <div class="row">
+                <h3>Users</h3>
+            </div>
+                <table class="table card shadow blue_bg">
+                    <thead>
+                        <tr>
+                            <th scope="col">Online Users</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for users in users_list %}
+                        {% if users.id != session.user_id %}
+                        {% if users.logged_in == 1 %}
+                        <tr>
+                            <td>{{users.first_name}} {{users.last_name}} <img src="../static/images/online.jpeg" alt="online_img" height="20px" width="20px"></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td>{{users.first_name}} {{users.last_name}} <img src="../static/images/offline.jpg" alt="offline_img" height="20px" width="20px"></td>
+                        </tr>
+                        {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>   
+                </table>
+            
+        </div>
+        <!-- <div class="col-3">
+            <div class ="col">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Online Users</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for users in users_list %}
+                        {% if users.id != session.user_id %}
+                        {% if users.logged_in == 1 %}
+                        <tr>
+                            <td>{{users.first_name}} {{users.last_name}} <img src="../static/images/online.jpeg" alt="online_img" height="20px" width="20px"></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td>{{users.first_name}} {{users.last_name}} <img src="../static/images/offline.jpg" alt="offline_img" height="20px" width="20px"></td>
+                        </tr>
+                        {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>   
+                </table>
+            </div>
+
+        </div> -->
+    </div>
+    <!-- {% for room in rooms %} 
     <form action="/join_room/{{user.username}}/{{room.number}}/{{room.name}}">
     <div>
         {% if 'private' == room.name %}
@@ -51,7 +253,7 @@
         {% endif %}
     </div>
     </form>
-    {% endfor %}
+    {% endfor %} -->
     <!-- <div class="row d-flex justify-content-center" id="main_body">
         <div class="col-6"> 
             <h2 class="m-3 mt-5">Welcome {{session['first_name']}}</h2>
@@ -104,18 +306,12 @@
             </table>
         </div>
     </div> -->
-    <form action="/chat/{{user.username}}">
-        <!-- <div>
+    <!-- <form action="/chat/{{user.username}}">
+        <div>
             <label>Enter your username:</label>
             <input type="text" name="username">
-        </div> -->
-        {% with messages = get_flashed_messages() %}     <!-- declare a variable called messages -->
-                    {% if messages %}                            <!-- check if there are any messages -->
-                        {% for message in messages %}            <!-- loop through the messages -->
-                            <p>{{message}}</p>                   <!-- display each message in a paragraph tag -->
-                        {% endfor %}
-                    {% endif %}
-        {% endwith %}
+        </div>
+        
         <div>
             <label>Select Chat:</label><br>
             <input type="radio" name="radio-choice" id="public_chat" value="public"> </input>
@@ -127,7 +323,12 @@
 
         </div>
         <button type="submit">Create Chatroom</button>
-    </form>
+    </form> -->
 </div>
+<script src="/flask_app/static/js/bootstrap_js/bootstrap.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap_js/bootstrap.js') }}"></script>
+
+<script src="../static/js/script.js"></script>
+<link rel="script"  href="{{ url_for('static', filename='js/script.js') }}">
 </body>
 </html>

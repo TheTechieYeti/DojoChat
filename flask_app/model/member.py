@@ -4,7 +4,7 @@ from flask import session, flash
 import  pprint
 from datetime import datetime, date
 
-db="DojoChat_schema"
+db="dojochat_schema"
 class Member:
     def __init__(self, data):
         self.id = data['id']
