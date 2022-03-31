@@ -112,8 +112,8 @@
             </ul>
         </div>
     </div>
-    <div class="row d-flex justify-content-start mt-5 ms-1">
-        <div class="col-10">
+    <div class="row d-flex justify-content-start mt-5 ms-3">
+        <div class="col-9" >
             <!-- Header -->
             <div class="row">
                 <h3>Open ChatRooms</h3>
@@ -149,7 +149,7 @@
                     <form action="/join_room/{{user.username}}/{{room.number}}/{{room.name}}/{{room.subject}}">
                     {% if 'Private' == room.name %}
                             <tr>
-                                <th scope="row">{{room.id}}</th>
+                                <th scope="row">{{room.number}}</th>
                                 {% if not room.subject %}
                                 <td>None</td>
                                 {%else%}
@@ -162,7 +162,7 @@
                             </tr>
                     {% else %}
                             <tr>
-                                <th scope="row">{{room.id}}</th>
+                                <th scope="row">{{room.number}}</th>
                                 {% if not room.subject %}
                                 <td>None</td>
                                 {%else%}
@@ -183,7 +183,7 @@
                     </table>
                 </div>
         </div>
-        <div class="col-2">
+        <div class="col-2 ">
             <div class="row">
                 <h3>Users</h3>
             </div>
