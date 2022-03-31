@@ -31,6 +31,7 @@ def chat(usr):
     }
     check_room = Room.check_room(data)
     if check_room == 1:
+        flash(f"That room number is already in use. Please select a different one", "Chatroom_Form")
         return redirect("/dashboard",)
 
     #x = random.randint(1,50)
