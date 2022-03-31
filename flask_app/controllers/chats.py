@@ -3,6 +3,7 @@ from flask import render_template, redirect, session, flash, request, url_for, j
 from flask_app.config.mysqlconnection import MySQLConnection
 from flask_app.model.user import User
 from flask_app.model.room import Room
+from flask_app.model.room_att import Room_att
 from flask_app.model.member import Member
 from flask_app.model.message import Message
 
@@ -18,22 +19,35 @@ def chat(usr):
     username = usr;
     room = request.args.get('room')
     chat_type = request.args['radio-choice']
+    subject = request.args['subject']
     #print("*************") 
     #print (request.args['key'])
-    
-    x = random.randint(1,50)
-    print("Random NUmber Generator")
-    print(x)
-    # wil - i need the room object passed to chat.html so i can log messages
+
+    if room == 0 :
+        flash("please enter a different room number other than 0")
+        return redirect("/dashboard",)
+    data = {
+        "number" : room,
+    }
+    check_room = Room.check_room(data)
+    if check_room == 1:
+        return redirect("/dashboard",)
+
+    #x = random.randint(1,50)
+    print("Random NUmber")
+    print(room)
     if chat_type == "public":
         data = {
             "name" : chat_type,
             "administrator_id" : session['user_id'],
-            "number" : x,
-            "passkey" : ""
+            "number" : room,
+            "passkey" : "",
+            "subject" : request.args['subject'],
         }
+
         this_room = Room.create(data)
         return render_template('chat.html', username=username, room=x, chat_type=chat_type, chat_room=this_room)
+
     elif chat_type == "private" :
         if request.args['key'] == "":
             flash("Enter a passkey to create a private chat room")
@@ -41,22 +55,26 @@ def chat(usr):
         data = {
             "name" : chat_type,
             "administrator_id" : session['user_id'],
-            "number" : x,
-            "passkey" : request.args['key']
+            "number" : room,
+            "passkey" : request.args['key'],
+            "subject" : request.args['subject'],
         }
+   
         this_room = Room.create(data)
         return render_template('chat.html', username=username, room=x, chat_type=chat_type, chat_room = this_room)
+
     #member.Member.insert_room_id(data)
     #Room.create(data)
     else:
         return redirect("/dashboard",)
 
-@app.route('/join_room/<usr>/<int:room>/<chat_type>')
-def join(usr,room,chat_type):
+@app.route('/join_room/<usr>/<int:room>/<chat_type>/<subject>')
+def join(usr,room,chat_type,subject):
         
     username = usr;
     room = room
     chat_type = chat_type
+    subject = subject
     #print("##############") 
     #print (chat_type)
     if chat_type == "private" :
@@ -75,16 +93,27 @@ def join(usr,room,chat_type):
         if chat_type == "private" :
             data = {
                 'number' : room,
+                "administrator_id" : session['user_id'],
             }
             check_key = Room.check_passkey(data)
             if check_key == key :
                 print (check_key,key)
-                return render_template('chat.html', username=username, room=room, chat_type=chat_type, chat_room=this_room)
+                
+                Room_att.join(data)
+                return render_template('chat.html', username=username, room=room, chat_type=chat_type,subject=subject)
             else :
                 flash("Incorrect passkey. Please enter the right passkey")
                 return redirect("/dashboard",)
         elif chat_type == "public" :
-            return render_template('chat.html', username=username, room=room, chat_type=chat_type, chat_room=this_room)
+
+            data = {
+                'number' : room,
+                "administrator_id" : session['user_id'],
+            }
+            print("Joining room from lobby")
+            Room_att.join(data)
+
+            return render_template('chat.html', username=username, room=room, chat_type=chat_type,subject=subject)
     else:
         return redirect("/dashboard",)
 
@@ -95,6 +124,8 @@ def exit_room(room):
         'id' : session['user_id'],
         'number' : room,
     }
+    Room_att.remove_user(data)
+    room_info = Room.get_members_in_room(data)
     admin_data = Room.get_administrator_from_room_number(data)
     if admin_data == session['user_id']:
         print('removing admin privlage for user_id',admin_data)
@@ -105,6 +136,14 @@ def exit_room(room):
         Room.remove_admin(new_data)
     else:
         print('user not admin')
+    
+    data = {
+        'id' : session['user_id'],
+        'number' : room,
+    }
+    attendence = Room_att.check_room_users(data)
+    if attendence == 0:
+        Room.delete_room(data)
     #if (admin == session['user_id']):
     #    print(admin,session['user_id'])
     #else:
