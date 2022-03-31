@@ -3,7 +3,6 @@ from flask import render_template, redirect, session, flash, request, url_for
 from flask_app.config.mysqlconnection import MySQLConnection
 from flask_app.model.user import User
 from flask_app.model.room import Room
-from flask_app.model.room_att import Room_att
 from flask_app.model.member import Member
 
 
@@ -19,9 +18,9 @@ def chat(usr):
     username = usr;
     room = request.args.get('room')
     chat_type = request.args['radio-choice']
-    subject = request.args['subject']
     #print("*************") 
     #print (request.args['key'])
+<<<<<<< HEAD
     if room == 0 :
         flash("please enter a different room number other than 0")
         return redirect("/dashboard",)
@@ -35,16 +34,27 @@ def chat(usr):
     #x = random.randint(1,50)
     print("Random NUmber")
     print(room)
+=======
+    
+    x = random.randint(1,50)
+    print("Random NUmber Generator")
+    print(x)
+    # wil - i need the room object passed to chat.html so i can log messages
+>>>>>>> parent of 1dfd32c (Merge branch 'main' into dev-wil)
     if chat_type == "public":
         data = {
             "name" : chat_type,
             "administrator_id" : session['user_id'],
-            "number" : room,
-            "passkey" : "",
-            "subject" : request.args['subject'],
+            "number" : x,
+            "passkey" : ""
         }
+<<<<<<< HEAD
         Room.create(data)
         return render_template('chat.html', username=username, room=room, chat_type=chat_type,subject=subject)
+=======
+        this_room = Room.create(data)
+        return render_template('chat.html', username=username, room=x, chat_type=chat_type, chat_room=this_room)
+>>>>>>> parent of 1dfd32c (Merge branch 'main' into dev-wil)
     elif chat_type == "private" :
         if request.args['key'] == "":
             flash("Enter a passkey to create a private chat room")
@@ -52,24 +62,27 @@ def chat(usr):
         data = {
             "name" : chat_type,
             "administrator_id" : session['user_id'],
-            "number" : room,
-            "passkey" : request.args['key'],
-            "subject" : request.args['subject'],
+            "number" : x,
+            "passkey" : request.args['key']
         }
+<<<<<<< HEAD
         Room.create(data)
         return render_template('chat.html', username=username, room=room, chat_type=chat_type,subject=subject)
+=======
+        this_room = Room.create(data)
+        return render_template('chat.html', username=username, room=x, chat_type=chat_type, chat_room = this_room)
+>>>>>>> parent of 1dfd32c (Merge branch 'main' into dev-wil)
     #member.Member.insert_room_id(data)
     #Room.create(data)
     else:
         return redirect("/dashboard",)
 
-@app.route('/join_room/<usr>/<int:room>/<chat_type>/<subject>')
-def join(usr,room,chat_type,subject):
+@app.route('/join_room/<usr>/<int:room>/<chat_type>')
+def join(usr,room,chat_type):
         
     username = usr;
     room = room
     chat_type = chat_type
-    subject = subject
     #print("##############") 
     #print (chat_type)
     if chat_type == "private" :
@@ -83,17 +96,21 @@ def join(usr,room,chat_type,subject):
         if chat_type == "private" :
             data = {
                 'number' : room,
-                "administrator_id" : session['user_id'],
             }
             check_key = Room.check_passkey(data)
             if check_key == key :
                 print (check_key,key)
+<<<<<<< HEAD
                 Room_att.join(data)
                 return render_template('chat.html', username=username, room=room, chat_type=chat_type,subject=subject)
+=======
+                return render_template('chat.html', username=username, room=room, chat_type=chat_type, chat_room=this_room)
+>>>>>>> parent of 1dfd32c (Merge branch 'main' into dev-wil)
             else :
                 flash("Incorrect passkey. Please enter the right passkey")
                 return redirect("/dashboard",)
         elif chat_type == "public" :
+<<<<<<< HEAD
             data = {
                 'number' : room,
                 "administrator_id" : session['user_id'],
@@ -102,6 +119,9 @@ def join(usr,room,chat_type,subject):
             Room_att.join(data)
 
             return render_template('chat.html', username=username, room=room, chat_type=chat_type,subject=subject)
+=======
+            return render_template('chat.html', username=username, room=room, chat_type=chat_type, chat_room=this_room)
+>>>>>>> parent of 1dfd32c (Merge branch 'main' into dev-wil)
     else:
         return redirect("/dashboard",)
 
@@ -112,8 +132,6 @@ def exit_room(room):
         'id' : session['user_id'],
         'number' : room,
     }
-    Room_att.remove_user(data)
-    room_info = Room.get_members_in_room(data)
     admin_data = Room.get_administrator_from_room_number(data)
     if admin_data == session['user_id']:
         print('removing admin privlage for user_id',admin_data)
@@ -124,14 +142,6 @@ def exit_room(room):
         Room.remove_admin(new_data)
     else:
         print('user not admin')
-    
-    data = {
-        'id' : session['user_id'],
-        'number' : room,
-    }
-    attendence = Room_att.check_room_users(data)
-    if attendence == 0:
-        Room.delete_room(data)
     #if (admin == session['user_id']):
     #    print(admin,session['user_id'])
     #else:

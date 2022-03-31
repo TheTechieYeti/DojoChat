@@ -12,7 +12,7 @@ bcrypt = Bcrypt(app)
 def log_reg():
     if 'user_id' in session:
         return redirect('/dashboard')
-    return render_template("popover.html")
+    return render_template("login_reg.html")
 
 @app.route('/register', methods=["POST"])         
 def register():
@@ -38,16 +38,11 @@ def dashboard():
         flash('You must be logged in to view this page')
         return redirect('/')
     
-    #data = {
-    #    'user_id' : session['user_id']
-    #}
     data = {
-            "id" : session["user_id"],
-            "on" : 1,
+        'user_id' : session['user_id']
     }
-    user.User.logon(data)
     #return render_template("dashboard.html", rooms = room.Room.get_all_user_rooms(data), chats = chat.Chat.get_all_user_chats(data),user=user.User.get_logged_in_user())
-    return render_template("dashboard.html", rooms = room.Room.get_all_rooms(), user=user.User.get_logged_in_user(), users_list=user.User.get_all_users())
+    return render_template("dashboard.html", rooms = room.Room.get_all_rooms(), user=user.User.get_logged_in_user())
 
 @app.route('/login', methods = ["POST"])
 def login():
@@ -63,12 +58,6 @@ def login():
         flash("Incorrect Password")
         return redirect ("/")
     session["user_id"] = login_user.id
-    
-    data = {
-            "id" : session["user_id"],
-            "on" : 1,
-    }
-    user.User.logon(data)
     return redirect("/dashboard",)
 
 @app.route('/user/<int:user_id>')
@@ -106,11 +95,6 @@ def update_user(user_id):
 @app.route('/logout')
 def logout():
     #session.pop('user_id')
-    data = {
-            "id" : session["user_id"],
-            "on" : 0,
-    }
-    user.User.logon(data)
     session.clear()
     return redirect("/") 
     
