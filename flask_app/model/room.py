@@ -40,17 +40,7 @@ class Room:
         }
         query = "INSERT INTO members (room_id, user_id) VALUES "\
         "(%(room_id)s, %(user_id)s);"
-<<<<<<< HEAD
         return MySQLConnection(db).query_db( query, new_data )
-=======
-        member_insert = MySQLConnection(db).query_db( query, data )
-        # wil - have to get the room we just made and return it
-        data = {
-            'id': new_room_id
-        }
-        return Room.get(data)
->>>>>>> parent of 1dfd32c (Merge branch 'main' into dev-wil)
-
     @classmethod
     def update(cls, data):
         # NOTE: Do we allow change of admin?
