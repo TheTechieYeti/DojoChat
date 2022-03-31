@@ -79,7 +79,7 @@ def join(usr,room,chat_type,subject):
         print(request.args['private_key'])
         key = request.args['private_key']
         if key == "" :
-            flash("Wrong passkey, please enter the correct passkey")
+            flash("Wrong passkey, please enter the correct passkey","Private")
             return redirect("/dashboard",)
     if username and room:
         if chat_type == "private" :
@@ -93,7 +93,7 @@ def join(usr,room,chat_type,subject):
                 Room_att.join(data)
                 return render_template('chat.html', username=username, room=room, chat_type=chat_type,subject=subject)
             else :
-                flash("Incorrect passkey. Please enter the right passkey")
+                flash("Incorrect passkey. Please enter the right passkey", "Private")
                 return redirect("/dashboard",)
         elif chat_type == "public" :
             data = {
