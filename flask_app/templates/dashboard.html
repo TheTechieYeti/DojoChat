@@ -21,32 +21,29 @@
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
+                {% with messages = get_flashed_messages() %}     <!-- declare a variable called messages -->
+                {% if messages %} 
+            <div class="row mt3 ms-3">                         <!-- check if there are any messages -->
+                    {% for message in messages %}            <!-- loop through the messages -->
+                        <p class="flash_message"><img src="../static/images/error.png" alt="Error Icon">{{message}}</p>                   <!-- display each message in a paragraph tag -->
+                    {% endfor %}
+            </div> 
+                {% endif %}
+            {% endwith %}
             <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">Create Chat Room</h5>
                 <button type="button" class=" ms-3 btn btn-secondary" onclick="bring_to_top('public_chat_form')">Public</button>
                 <button type="button" class=" ms-3 btn btn-primary" onclick="bring_to_top('private_chat_form')">Private</button>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                
             </div>
             <div class="modal-body">
-                {% with messages = get_flashed_messages() %}     <!-- declare a variable called messages -->
-                    {% if messages %}                            <!-- check if there are any messages -->
-                        {% for message in messages %}            <!-- loop through the messages -->
-                            <p>{{message}}</p>                   <!-- display each message in a paragraph tag -->
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
-                <form id="public_chat_form" action="/chat/{{user.username}}">
+                <form. id="public_chat_form" action="/chat/{{user.username}}">
                     <!-- <div>
                         <label>Enter your username:</label>
                         <input type="text" name="username">
                     </div> -->
-                    {% with messages = get_flashed_messages() %}     <!-- declare a variable called messages -->
-                    {% if messages %}                            <!-- check if there are any messages -->
-                        {% for message in messages %}            <!-- loop through the messages -->
-                            <p>{{message}}</p>                   <!-- display each message in a paragraph tag -->
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
+                    
                     <div>
                         <input type="hidden" id="public_chat" name="radio-choice" value="public"> </input>
                         <label>Enter Room Number:</label><br>
@@ -55,15 +52,8 @@
                         <input type="text" name="subject" value="Chat"><br>
                     </div>
                     <button type="submit" class="btn btn-primary mt-2">Create Public Chatroom</button>
-                </form>
-                {% with messages = get_flashed_messages() %}     <!-- declare a variable called messages -->
-                    {% if messages %}                            <!-- check if there are any messages -->
-                        {% for message in messages %}            <!-- loop through the messages -->
-                            <p>{{message}}</p>                   <!-- display each message in a paragraph tag -->
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
-                <form id="private_chat_form" class="" action="/chat/{{user.username}}">
+                </form.
+                ><form id="private_chat_form" class="" action="/chat/{{user.username}}">
                     <!-- <div>
                         <label>Enter your username:</label>
                         <input type="text" name="username">

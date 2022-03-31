@@ -24,6 +24,7 @@ def chat(usr):
     #print (request.args['key'])
     if room == 0 :
         flash("please enter a different room number other than 0")
+        print("Enter a room number other than 0")
         return redirect("/dashboard",)
     data = {
         "number" : room,
@@ -47,6 +48,7 @@ def chat(usr):
         return render_template('chat.html', username=username, room=room, chat_type=chat_type,subject=subject)
     elif chat_type == "private" :
         if request.args['key'] == "":
+            print("Enter a passkey to create a private chat room")
             flash("Enter a passkey to create a private chat room")
             return redirect("/dashboard",)
         data = {
