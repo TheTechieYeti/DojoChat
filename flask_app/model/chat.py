@@ -6,7 +6,7 @@ from datetime import datetime, date
 from flask_app.model.room import Room
 from flask_app.model.message import Message
 
-db="DojoChat_schema"
+db="dojochat_schema"
 class Chat:
     def __init__(self, data):
         self.id = data['id']

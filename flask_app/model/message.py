@@ -5,7 +5,7 @@ import  pprint
 from datetime import datetime, date
 from flask_app.model.member import Member
 
-db="DojoChat_schema"
+db="dojochat_schema"
 class Message:
     def __init__(self, data) -> None:
         self.id = data['id']
