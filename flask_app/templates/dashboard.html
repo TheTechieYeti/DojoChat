@@ -59,7 +59,7 @@
                     </div> -->
                     
                     <div>
-                        <input type="hidden" id="public_chat" name="radio-choice" value="public"> </input>
+                        <input type="hidden" id="public_chat" name="radio-choice" value="Public"> </input>
                         <label>Enter Room Number:</label><br>
                         <input type="text" name="room" value="0"><br>
                         <label>Enter Room Subject:</label><br>
@@ -77,7 +77,7 @@
                         <label>Enter Room Number:</label>
                         <input type="text" name="room" value="0"><br>
                         <input type="hidden" id="public_chat" value="public"> </input>
-                        <input type="hidden" id="public_chat" name="radio-choice" value="private"> </input>
+                        <input type="hidden" id="public_chat" name="radio-choice" value="Private"> </input>
                         <label>Enter Room Subject:</label><br>
                         <input type="text" name="subject" value="Chat"><br>
                         <label id= "passkey" for="key"> Enter Passkey:</label>
@@ -112,11 +112,13 @@
             </ul>
         </div>
     </div>
-    <div class="row d-flex justify-content-center mt-5">
-        <div class="col-8">
+    <div class="row d-flex justify-content-start mt-5 ms-1">
+        <div class="col-10">
+            <!-- Header -->
             <div class="row">
                 <h3>Open ChatRooms</h3>
             </div>
+            <!-- Flash Messages -->
             <div class="row">
                 {% with messages = get_flashed_messages(category_filter=["Private"]) %}
                     {% if messages %}
@@ -130,25 +132,86 @@
                     {% endif %}
                     {% endwith %}
             </div>
-            <div id="open_rooms" class="row card shadow blue_bg">
-                {% for room in rooms %} 
-                <form action="/join_room/{{user.username}}/{{room.number}}/{{room.name}}/{{room.subject}}">
-                <div>
-                    {% if 'private' == room.name %}
-                        <a href="#">Topic : {{room.subject}} Room Type :{{room.name}} </a>
+            <!-- Rooms & Users Card -->
+                <div id="open_rooms" class="row card shadow blue_bg alight-self-end ">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Room #</th>
+                                <th scope="col">Subject</th>
+                                <th scope="col">Type</th>
+                                <th scope="col"> </th>
+                                <th scope="col"> Join </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                    {% for room in rooms %}
+                    <form action="/join_room/{{user.username}}/{{room.number}}/{{room.name}}/{{room.subject}}">
+                    {% if 'Private' == room.name %}
+                            <tr>
+                                <th scope="row">{{room.id}}</th>
+                                {% if not room.subject %}
+                                <td>None</td>
+                                {%else%}
+                                <td>{{room.subject}}</td>
+                                {% endif %}
+                                <td>{{room.name}}</td>
+                                <td><label id= "keyword" for="private_key"> Enter Passkey:</label>
+                                    <input id = "keyword" type="text" name="private_key"></td>
+                                <td><button type="submit">Join</button></td>
+                            </tr>
+                    {% else %}
+                            <tr>
+                                <th scope="row">{{room.id}}</th>
+                                {% if not room.subject %}
+                                <td>None</td>
+                                {%else%}
+                                <td>{{room.subject}}</td>
+                                {% endif %}
+                                <td>{{room.name}}</td>
+                                <td> </td>
+                                <td><button type="submit">Join</button></td>
+                            </tr>
+                    {% endif %}
+                        <!-- <p>Topid: {{room.subject}} Room Type: {{room.name}}</p>
                         <label id= "keyword" for="private_key"> Enter Passkey:</label>
                         <input id = "keyword" type="text" name="private_key">
-                        <button type="submit">Join Room</button>
-                    {% else %}
-                        <a href="#">Topic: {{room.subject}} Room Type: {{room.name}} </a>
-                        <button type="submit">Join Room</button>
-                    {% endif %}
+                        <button type="submit">Join Room</button> -->
+                    </form>
+                    {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-                </form>
-                {% endfor %}
-            </div>
         </div>
-        <div class="col-3">
+        <div class="col-2">
+            <div class="row">
+                <h3>Users</h3>
+            </div>
+                <table class="table card shadow blue_bg">
+                    <thead>
+                        <tr>
+                            <th scope="col">Online Users</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for users in users_list %}
+                        {% if users.id != session.user_id %}
+                        {% if users.logged_in == 1 %}
+                        <tr>
+                            <td>{{users.first_name}} {{users.last_name}} <img src="../static/images/online.jpeg" alt="online_img" height="20px" width="20px"></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td>{{users.first_name}} {{users.last_name}} <img src="../static/images/offline.jpg" alt="offline_img" height="20px" width="20px"></td>
+                        </tr>
+                        {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>   
+                </table>
+            
+        </div>
+        <!-- <div class="col-3">
             <div class ="col">
                 <table class="table">
                     <thead>
@@ -174,7 +237,7 @@
                 </table>
             </div>
 
-        </div>
+        </div> -->
     </div>
     <!-- {% for room in rooms %} 
     <form action="/join_room/{{user.username}}/{{room.number}}/{{room.name}}">
