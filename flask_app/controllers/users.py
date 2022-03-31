@@ -1,5 +1,5 @@
 from flask_app import app
-from flask import render_template, redirect, session, flash, request, jsonify
+from flask import render_template, redirect, session, flash, request
 from flask_app.config.mysqlconnection import MySQLConnection
 from flask_bcrypt import Bcrypt
 from flask_app.model import user

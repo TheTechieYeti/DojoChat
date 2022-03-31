@@ -16,9 +16,9 @@ class Message:
         self.user = None
 
     @classmethod
-    def post(cls, data):
-        query = "INSERT INTO messages (text, user_id, room_id) VALUES "\
-                "(%(text)s, %(user_id)s, %(room_id)s);"
+    def create(cls, data):
+        query = "INSERT INTO messages text, chat_id, user_id VALUES "\
+                "(%(text)s, %(chat_id)s, %(user_id)s);"
         return MySQLConnection(db).query_db(query, data)
 
     @classmethod
@@ -31,3 +31,4 @@ class Message:
         query = "SELECT id, first_name, last_name FROM users WHERE id = %(user_id)s;"
         results = MySQLConnection(db).query_db(query, data)
         return Member(results[0])
+

@@ -84,31 +84,6 @@
                     message: message
                 })
             }
-            // log the message
-            var json_message = JSON.stringify({ text : message,
-                    user_id: "{{session['user_id']}}",
-                    room_id: "{{ chat_room.id }}"})
-            fetch('/message/log', {
-
-                // Specify the method
-                method: 'POST',
-
-                // JSON
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-
-                // A JSON payload
-                body: json_message
-                }).then(function (response) { // At this point, Flask has printed our JSON
-                return response.text();
-                }).then(function (text) {
-
-                console.log('POST response: ');
-
-                // Should be 'OK' if everything was successful
-                console.log(text);
-            });
             message_input.value = '';
             message_input.focus();
         }
