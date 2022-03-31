@@ -4,7 +4,7 @@ from flask import session, flash
 import  pprint
 import re
 from datetime import datetime, date
-db="DojoChat_schema"
+db="dojochat_schema"
 
 class User:
     def __init__(self, data):

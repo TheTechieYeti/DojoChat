@@ -9,7 +9,7 @@ from flask_app.model.user import User
 from flask_app.model.room_att import Room_att
 
 
-db="DojoChat_schema"
+db="dojochat_schema"
 class Room:
     def __init__(self, data):
         self.id = data['id']
